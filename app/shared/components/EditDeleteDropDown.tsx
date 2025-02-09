@@ -24,7 +24,10 @@ export function EditDeleteDropDown({
         <DropdownMenuTrigger className="focus:outline-none flex">
           <Settings className="w-4 h-4" />
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="flex-col px-2 py-2">
+        <DropdownMenuContent
+          align="end"
+          className="flex-col px-2 py-2 bg-white"
+        >
           <DropdownMenuItem className="flex gap-2 p-0 pb-[6px]">
             <SquarePen className="w-4 h-4" />
             <button onClick={onEdit}>Edit</button>
