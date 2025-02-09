@@ -1,5 +1,5 @@
 import { ROUTES } from '~/shared/constants/routes';
-import { NotebookPen, Users, Star, TreePalm } from 'lucide-react';
+import { ChartColumnStacked, Euro, TreePalm } from 'lucide-react';
 import type { NavigationList } from '~/shared/types/NavigationList';
 import { Outlet } from 'react-router';
 import { cn } from '~/lib/cn';
@@ -10,24 +10,19 @@ import { useIsLessThanSize } from '~/shared/hooks/useIsLessThanSize';
 
 const NAVIGATION_LIST: NavigationList = [
   {
-    path: ROUTES.bookings,
-    name: 'Bookings',
-    icon: NotebookPen,
-  },
-  {
-    path: ROUTES.customers,
-    name: 'Customers',
-    icon: Users,
-  },
-  {
-    path: ROUTES.reviews,
-    name: 'Reviews',
-    icon: Star,
-  },
-  {
     path: ROUTES.tours,
     name: 'Tours',
     icon: TreePalm,
+  },
+  {
+    path: ROUTES.categories,
+    name: 'Categories',
+    icon: ChartColumnStacked,
+  },
+  {
+    path: ROUTES.currencies,
+    name: 'Currencies',
+    icon: Euro,
   },
 ];
 
@@ -43,7 +38,7 @@ export default function Admin() {
     }
   }, [isMobile]);
   return (
-    <div className="max-w-[1440px] pt-[117px]">
+    <div className="max-w-[1440px] pt-[63px]">
       <Sidebar
         isMobile={isMobile}
         options={NAVIGATION_LIST}

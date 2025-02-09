@@ -4,9 +4,13 @@
 /*noinspection CssInvalidAtRule*/
 @variant dark (&:where(.dark, .dark *));
 
+@theme {
+  --hover-animate: transition-all duration-400;
+}
 
 @layer base {
   :root {
+    --color-black: #202020;
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
@@ -32,6 +36,10 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+
+    button {
+      cursor: pointer;
+    }
   }
 
   .dark {

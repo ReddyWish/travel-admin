@@ -1,0 +1,95 @@
+erDiagram
+    Tour ||--o{ TourImage : has
+    Tour ||--o{ TourProgramFragment : has
+    Tour ||--o{ TourPrice : has
+    Tour ||--o{ TourInclusion : has
+    Tour ||--o{ TourExclusion : has
+    Tour ||--o{ TourAccommodation : has
+    Tour }o--o{ Category : has
+    Currency ||--o{ TourPrice : has
+
+    Tour {
+        int id PK
+        string title
+        string shortDescription
+        string description
+        boolean isDirectBooking
+        boolean isBestSeller
+        string location
+        int durationDays
+        string includes
+        string excludes
+        timestamptz createdAt
+        timestamptz updatedAt
+    }
+
+    TourAccommodation {
+        int id PK
+        int tourId FK
+        enum stars
+        string hotelName
+        timestamp createdAt
+        timestamp updatedAt
+    }
+
+    TourInclusion {
+        int id PK
+        int tourId FK
+        string description
+        timestamp createdAt
+        timestamp updatedAt
+    }
+
+    TourExclusion {
+        int id PK
+        int tourId FK
+        string description
+        timestamp createdAt
+        timestamp updatedAt
+    }
+
+    TourImage {
+        int id PK
+        int tourId FK
+        string url
+        boolean isPrimary
+        timestamptz createdAt
+        timestamptz updatedAt
+    }
+
+    TourProgramFragment {
+        int id PK
+        int tourId FK
+        int order
+        string startTime
+        string title
+        string description
+        timestamptz createdAt
+        timestamptz updatedAt
+    }
+
+    Category {
+        int id PK
+        string name
+        string description
+        string imageUrl
+        timestamptz createdAt
+        timestamptz updatedAt
+    }
+
+    TourPrice {
+        int id PK
+        int tourId FK
+        int currencyId FK
+        float amount
+        string comment
+        timestamptz createdAt
+        timestamptz updatedAt
+    }
+
+    Currency {
+        int id PK
+        string code
+        timestamptz createdAt
+        timestamptz updatedAt
+    }

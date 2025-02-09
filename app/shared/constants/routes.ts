@@ -1,6 +1,5 @@
 export const ROUTES = {
-  bookings: 'bookings',
-  customers: 'customers',
+  categories: 'categories',
   tours: 'tours',
-  reviews: 'reviews',
+  currencies: 'currencies',
 };

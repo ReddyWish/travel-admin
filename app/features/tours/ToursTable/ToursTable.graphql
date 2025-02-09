@@ -1,0 +1,19 @@
+query GetTours {
+    tours {
+        id
+        title
+        price {
+            amount
+            currency {
+                code
+            }
+            isBasePrice
+        }
+        accommodations {
+            hotelName
+            stars
+        }
+        location
+        isBestSeller
+    }
+}
