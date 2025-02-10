@@ -16,6 +16,8 @@ export function Title({ type = 'h2', children, className }: TitleProps) {
   };
 
   return (
-    <Heading className={cn(className, headingStyles[type])}>{children}</Heading>
+    <Heading className={cn(className, headingStyles[type], 'dark:text-white')}>
+      {children}
+    </Heading>
   );
 }

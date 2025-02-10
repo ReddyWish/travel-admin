@@ -1,4 +1,4 @@
-mutation TourDeleteMutation($id: ID!) {
+mutation DeleteTour($id: ID!) {
     deleteTour(id: $id) {
         id
         title

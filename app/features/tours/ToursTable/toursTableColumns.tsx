@@ -1,21 +1,13 @@
 import type { ColumnDef } from '@tanstack/react-table';
 import { CircleCheck, CircleX } from 'lucide-react';
-import type {
-  GetToursQuery,
-  GetToursQueryHookResult,
-  GetToursQueryResult,
-} from '~/features/tours/ToursTable/__generated__/ToursTable';
 import type { NavigateFunction } from 'react-router';
 import { EditDeleteDropDown } from '~/shared/components/EditDeleteDropDown';
-import type {
-  TourDeleteMutationMutationFn,
-  TourDeleteMutationMutationResult,
-  TourDeleteMutationMutationVariables,
-} from '~/features/tours/ToursTable/__generated__/TourDeleteMutation';
+import type { DeleteTourMutationFn } from '~/features/tours/ToursTable/__generated__/DeleteTour';
+import type { GetToursQuery } from '~/features/tours/ToursTable/__generated__/GetTours';
 
 interface ToursTableColumnsProps {
   navigate: NavigateFunction;
-  deleteTour: TourDeleteMutationMutationFn;
+  deleteTour: DeleteTourMutationFn;
 }
 
 export type TourFragment = GetToursQuery['tours'][0];

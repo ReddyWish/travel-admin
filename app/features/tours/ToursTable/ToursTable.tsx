@@ -1,8 +1,4 @@
 import {
-  type GetToursQuery,
-  useGetToursQuery,
-} from '~/features/tours/ToursTable/__generated__/ToursTable';
-import {
   type ColumnDef,
   createColumnHelper,
   flexRender,
@@ -13,7 +9,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import type { GetToursQueryResult } from '~/features/tours/ToursTable/__generated__/ToursTable';
 import {
   Table,
   TableBody,
@@ -23,18 +18,19 @@ import {
   TableHead,
 } from '~/shared/components/ui/table';
 import { Spinner } from '~/shared/components/Spinner';
-import { toursTableColumns } from '~/features/tours/ToursTable/ToursTableColumns';
+import { toursTableColumns } from '~/features/tours/ToursTable/toursTableColumns';
 import { useNavigate } from 'react-router';
-import { useTourDeleteMutationMutation } from '~/features/tours/ToursTable/__generated__/TourDeleteMutation';
+import { useGetToursQuery } from '~/features/tours/ToursTable/__generated__/GetTours';
+import { useDeleteTourMutation } from '~/features/tours/ToursTable/__generated__/DeleteTour';
+import CustomTable from '~/shared/components/CustomTable';
 
 export default function ToursTable() {
   const navigate = useNavigate();
   const { data, loading, error } = useGetToursQuery();
-  const [deleteTourMutation, { loading: deleteTourLoading }] =
-    useTourDeleteMutationMutation();
+  const [deleteTour, { loading: deleteTourLoading }] = useDeleteTourMutation();
   const columns = toursTableColumns({
     navigate,
-    deleteTour: deleteTourMutation,
+    deleteTour,
   });
 
   const table = useReactTable({
@@ -48,47 +44,6 @@ export default function ToursTable() {
       <Spinner />
     </div>
   ) : (
-    <Table className="dark:text-white">
-      <TableHeader>
-        {table.getHeaderGroups().map((headerGroup) => (
-          <TableRow key={headerGroup.id}>
-            {headerGroup.headers.map((header) => {
-              return (
-                <TableHead key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
-                </TableHead>
-              );
-            })}
-          </TableRow>
-        ))}
-      </TableHeader>
-      <TableBody>
-        {table.getRowModel().rows?.length ? (
-          table.getRowModel().rows.map((row) => (
-            <TableRow
-              key={row.id}
-              data-state={row.getIsSelected() && 'selected'}
-            >
-              {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))
-        ) : (
-          <TableRow>
-            <TableCell colSpan={columns.length} className="h-24 text-center">
-              No results.
-            </TableCell>
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+    <CustomTable table={table} columnCount={columns.length} />
   );
 }
