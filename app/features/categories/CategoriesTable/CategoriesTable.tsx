@@ -1,4 +1,7 @@
-import { useGetCategoriesQuery } from '~/features/categories/CategoriesTable/__generated__/GetCategories';
+import {
+  useGetCategoriesQuery,
+  GetCategoriesDocument,
+} from '~/features/categories/CategoriesTable/__generated__/GetCategories';
 import { useDeleteCategoryMutation } from '~/features/categories/CategoriesTable/__generated__/DeleteCategory';
 import { categoriesTableColumns } from '~/features/categories/CategoriesTable/categoriesTableColumns';
 import { useNavigate } from 'react-router';
@@ -17,12 +20,22 @@ import {
   TableRow,
 } from '~/shared/components/ui/table';
 import CustomTable from '~/shared/components/CustomTable';
+import { toast, useToast } from '~/hooks/use-toast';
 
 export default function CategoriesTable() {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const { data, loading, error } = useGetCategoriesQuery();
   const [deleteCategory, { loading: deleteCategoryLoading }] =
-    useDeleteCategoryMutation();
+    useDeleteCategoryMutation({
+      onCompleted: (data) => {
+        toast({
+          title: 'Success',
+          description: `Category ${data?.deleteCategory.name} deleted`,
+        });
+      },
+      refetchQueries: [GetCategoriesDocument],
+    });
 
   const columns = categoriesTableColumns({
     navigate,

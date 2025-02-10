@@ -12,6 +12,7 @@ import { ApolloProvider } from '@apollo/client';
 import type { Route } from './+types/root';
 import './app.css';
 import { client } from '~/lib/apollo';
+import { Toaster } from '~/shared/components/ui/toaster';
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -37,6 +38,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body className="dark:bg-black">
         {children}
+        <Toaster />
         <ScrollRestoration />
         <Scripts />
       </body>
