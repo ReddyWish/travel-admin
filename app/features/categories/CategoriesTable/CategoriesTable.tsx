@@ -5,22 +5,10 @@ import {
 import { useDeleteCategoryMutation } from '~/features/categories/CategoriesTable/__generated__/DeleteCategory';
 import { categoriesTableColumns } from '~/features/categories/CategoriesTable/categoriesTableColumns';
 import { useNavigate } from 'react-router';
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from '@tanstack/react-table';
+import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { Spinner } from '~/shared/components/Spinner';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '~/shared/components/ui/table';
 import CustomTable from '~/shared/components/CustomTable';
-import { toast, useToast } from '~/hooks/use-toast';
+import { useToast } from '~/hooks/use-toast';
 
 export default function CategoriesTable() {
   const navigate = useNavigate();
