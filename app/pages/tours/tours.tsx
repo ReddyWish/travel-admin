@@ -14,7 +14,7 @@ export default function Tours() {
           className="mr-0 w-full sm:mr-4 sm:max-w-[376px]"
           placeholder="Search..."
         />
-        <AddButton link="add">Create Tour</AddButton>
+        <AddButton link="add-tour">Create Tour</AddButton>
       </div>
       <ToursTable />
     </>

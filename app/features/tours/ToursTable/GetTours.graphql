@@ -7,7 +7,6 @@ query GetTours {
             currency {
                 code
             }
-            isBasePrice
         }
         accommodations {
             hotelName

@@ -12,8 +12,8 @@ export default [
   layout('shared/layouts/admin.tsx', [
     route('categories', 'pages/categories/categories.tsx'),
     route('tours', 'pages/tours/tours.tsx'),
-    route('tours/add', 'pages/tours/addTour.tsx'),
-    route('tours/edit/:id', 'pages/tours/[id]/editTour.tsx'),
+    route('tours/add-tour', 'pages/tours/add-tour.tsx'),
+    route('tours/edit-tour/:id', 'pages/tours/[id]/edit-tour.tsx'),
     route('currencies', 'pages/currencies/currencies.tsx'),
   ]),
 ] satisfies RouteConfig;

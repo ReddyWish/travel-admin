@@ -47,11 +47,13 @@ export const toursTableColumns = ({
     accessorKey: 'price',
     header: 'Price',
     cell: ({ row }) => {
-      const basePrice = row.original.price.find((price) => price.isBasePrice);
-      if (!basePrice) {
+      const minPrice = row.original.price.reduce((min, price) => {
+        return price.amount < min.amount ? price : min;
+      }, row.original.price[0]);
+      if (!minPrice) {
         return 'No price available';
       }
-      return `${basePrice.amount} ${basePrice.currency.code}`;
+      return `${minPrice.amount} ${minPrice.currency.code}`;
     },
   },
   {
@@ -59,7 +61,7 @@ export const toursTableColumns = ({
     header: '',
     cell: ({ row }) => {
       const goToEditReviewPage = () => {
-        navigate(`edit/${row.original.id}`);
+        navigate(`edit-tour/${row.original.id}`);
       };
       return (
         <EditDeleteDropDown
