@@ -12,7 +12,7 @@ export default function Rating({ className, rating = 1 }: RatingProps) {
       <div className="flex">
         {Array.from({ length: rating }, (_, index) => index + 1).map(
           (item, index) => (
-            <Star key={index} className="fill-yellow-400" />
+            <Star key={index} className="fill-sky-300" />
           ),
         )}
       </div>

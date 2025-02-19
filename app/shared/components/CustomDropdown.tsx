@@ -39,7 +39,7 @@ export default function CustomDropdown({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex justify-center items-center border-1 border-slate-200 rounded-md text-sm shadow-sm h-9 w-full lg:w-1/4 outline-none">
+      <DropdownMenuTrigger className="flex justify-center items-center border-1 border-slate-200 text-slate-400 rounded-md text-sm shadow-sm h-9 w-full lg:w-1/4 outline-none">
         {selectedOption ? selectedOption.label : placeholder}
       </DropdownMenuTrigger>
       <DropdownMenuContent
