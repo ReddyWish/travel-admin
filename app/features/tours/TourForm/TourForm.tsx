@@ -9,10 +9,21 @@ import StepSix from '~/features/tours/TourForm/StepSix';
 import { useSearchParams } from 'react-router';
 import FormStep from '~/features/tours/components/FormStep';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useGetCurrenciesQuery } from '~/features/currencies/CurrenciesTable/__generated__/GetCurrencies';
+import { createTourFormSchema } from '~/features/tours/schemas/tour-form-schema';
+import { z } from 'zod';
 
 export default function TourForm() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [currentStep, setCurrentStep] = useState(0);
+
+  const { data, loading } = useGetCurrenciesQuery();
+
+  const currencyIds = data?.currencies.map((currency) => currency.id);
+
+  const TourFormSchema = createTourFormSchema(currencyIds || []);
+
+  type Inputs = z.infer<typeof TourFormSchema>;
 
   const methods = useForm();
 
@@ -65,14 +76,18 @@ export default function TourForm() {
                   <span className="text-sm font-medium text-sky-300 transition-all delay-150">
                     {step.id}
                   </span>
-                  <span className="text-sm font-medium">{step.name}</span>
+                  <span className="text-sm font-medium text-black dark:text-white">
+                    {step.name}
+                  </span>
                 </div>
               ) : (
                 <div className="group flex w-full flex-col border-l-4 border-gray-200 py-2 pl-4 md:border-l-0 md:border-t-4 md:pb-0 md:pl-0 md:pt-4 transition-colors delay-100">
                   <span className="text-sm font-medium text-gray-500 transition-colors delay-100">
                     {step.id}
                   </span>
-                  <span className="text-sm font-medium">{step.name}</span>
+                  <span className="text-sm font-medium text-gray-500">
+                    {step.name}
+                  </span>
                 </div>
               )}
             </li>
