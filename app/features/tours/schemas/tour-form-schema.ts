@@ -3,29 +3,39 @@ import { z } from 'zod';
 export function createTourFormSchema(availableCurrencyIds: string[]) {
   return z.object({
     title: z
-      .string()
+      .string({ required_error: 'Tour Title is required' })
       .min(3, 'Title must be at least 3 characters')
       .max(100, 'Title must not exceed 100 characters'),
 
-    shortDescription: z
-      .string()
-      .max(200, 'Short description must not exceed 200 characters')
-      .optional(),
+    shortDescription: z.union([
+      z
+        .string()
+        .min(10, 'Short description must be at least 10 characters')
+        .max(200, 'Short description must not exceed 200 characters'),
+      z.string().length(0),
+      z.undefined(),
+    ]),
 
     description: z
-      .string()
+      .string({ required_error: 'Description is required' })
       .min(3, 'Description must be at least 10 characters')
       .max(5000, 'Description must not exceed 5000 characters'),
 
     isBestSeller: z.boolean().default(false),
 
-    location: z
-      .string()
-      .min(3, 'Location must be at least 3 characters')
-      .max(100, 'Location must not exceed 50 characters'),
+    location: z.union([
+      z
+        .string()
+        .min(3, 'Location must be at least 10 characters')
+        .max(30, 'Location must not exceed 30 characters'),
+      z.string().length(0),
+      z.undefined(),
+    ]),
 
     durationDays: z
-      .number()
+      .number({
+        required_error: 'Duration is required and must be at least 1 day',
+      })
       .int('Duration must be a whole number')
       .min(1, 'Duration must be at least 1 day')
       .max(50, 'Duration cannot exceed 50 days'),

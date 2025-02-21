@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { z } from 'zod';
 import { FORM_STEPS } from '~/features/tours/constants/formSteps';
 import StepOne from '~/features/tours/TourForm/StepOne';
 import StepThree from '~/features/tours/TourForm/StepThree';
@@ -6,37 +7,53 @@ import StepTwo from '~/features/tours/TourForm/StepTwo';
 import StepFour from '~/features/tours/TourForm/StepFour';
 import StepFive from '~/features/tours/TourForm/StepFive';
 import StepSix from '~/features/tours/TourForm/StepSix';
-import { useSearchParams } from 'react-router';
 import FormStep from '~/features/tours/components/FormStep';
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, type SubmitHandler, useForm } from 'react-hook-form';
 import { useGetCurrenciesQuery } from '~/features/currencies/CurrenciesTable/__generated__/GetCurrencies';
 import { createTourFormSchema } from '~/features/tours/schemas/tour-form-schema';
-import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 export default function TourForm() {
-  const [searchParams, setSearchParams] = useSearchParams();
   const [currentStep, setCurrentStep] = useState(0);
 
   const { data, loading } = useGetCurrenciesQuery();
 
   const currencyIds = data?.currencies.map((currency) => currency.id);
 
-  const TourFormSchema = createTourFormSchema(currencyIds || []);
+  const tourFormSchema = createTourFormSchema(currencyIds || []);
 
-  type Inputs = z.infer<typeof TourFormSchema>;
+  type Inputs = z.infer<typeof tourFormSchema>;
 
-  const methods = useForm();
+  const methods = useForm<Inputs>({
+    resolver: zodResolver(tourFormSchema),
+  });
 
-  const { handleSubmit, reset, trigger, control, clearErrors } = methods;
+  const { handleSubmit, reset, trigger, control, clearErrors, getValues } =
+    methods;
+
+  console.log(getValues());
+
+  const submitForm = handleSubmit((data) => {
+    processForm(data);
+  });
+
+  const processForm: SubmitHandler<Inputs> = async (data) => {
+    console.log(data);
+  };
+
+  type FieldName = keyof Inputs;
 
   const goToNextStep = async () => {
     if (currentStep >= FORM_STEPS.length - 1) return;
-
+    const fields = FORM_STEPS[currentStep].fields;
+    const output = await trigger(fields as FieldName[], { shouldFocus: false });
+    if (!output) return;
     setCurrentStep((step) => step + 1);
   };
 
   const goToPrevStep = () => {
     if (currentStep <= 0) return;
+    clearErrors();
     setCurrentStep((step) => step - 1);
   };
 
