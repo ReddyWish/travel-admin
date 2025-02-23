@@ -39,11 +39,14 @@ const hotelRatingOptions: RatingOption[] = Object.entries(HOTEL_RATINGS).map(
 
 export default function AccommodationFields() {
   const { control, setValue, watch } = useFormContext<Inputs>();
+  const accommodations = watch('accommodations');
   const currentRating = watch('accommodations.0.stars');
 
   useEffect(() => {
-    setValue('accommodations', [{ stars: 'THREE_STAR', hotelName: '' }]);
-  }, [setValue]);
+    if (!accommodations || accommodations.length === 0) {
+      setValue('accommodations', [{ stars: 'THREE_STAR', hotelName: '' }]);
+    }
+  }, [setValue, accommodations]);
 
   const handleRatingChange = (value: AccommodationRating) => {
     setValue('accommodations.0.stars', value, { shouldValidate: true });

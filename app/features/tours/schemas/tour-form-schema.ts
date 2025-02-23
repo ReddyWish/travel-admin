@@ -18,7 +18,7 @@ export function createTourFormSchema(availableCurrencyIds: string[]) {
 
     description: z
       .string({ required_error: 'Description is required' })
-      .min(3, 'Description must be at least 10 characters')
+      .min(10, 'Description must be at least 10 characters')
       .max(5000, 'Description must not exceed 5000 characters'),
 
     isBestSeller: z.boolean().default(false),
@@ -95,7 +95,9 @@ export function createTourFormSchema(availableCurrencyIds: string[]) {
           isPrimary: z.boolean().default(false),
         }),
       )
-      .optional()
+      .refine((images) => images.some((image) => image.isPrimary), {
+        message: 'Please add a tour cover image',
+      })
       .default([]),
 
     inclusions: z

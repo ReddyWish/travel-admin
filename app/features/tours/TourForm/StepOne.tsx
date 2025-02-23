@@ -18,6 +18,7 @@ import { Switch } from '~/shared/components/ui/switch';
 import { useFormContext } from 'react-hook-form';
 import type { Inputs } from '~/features/tours/types/FormInputs';
 import AccommodationFields from '~/features/tours/components/AccommodationFields';
+import TourImagesUpload from '~/features/tours/components/TourImagesUpload';
 
 export default function StepOne() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -36,25 +37,10 @@ export default function StepOne() {
       value: category.id,
     })) || [];
 
-  const handleCategoriesChange = (values: string[]) => {
-    setSelectedCategories(values);
-    // setValue('categoryIds', values);
-  };
-
   return (
-    <div className="flex flex-col gap-7 max-w-none">
+    <div className="flex flex-col gap-7 max-w-none h-full">
       <div className="flex gap-7 flex-col lg:flex-row">
-        <label
-          htmlFor="uploadFile1"
-          className="bg-white dark:bg-gray-300 font-semibold rounded-md lg:min-w-[332px] min-w-full flex flex-col items-center justify-center cursor-pointer border border-slate-200 shadow-md lg:p-3 p-5"
-        >
-          <UploadIcon className="w-15 fill-color-black pb-5" />
-          Upload Tour Cover
-          <input type="file" id="uploadFile1" className="hidden" />
-          <p className="text-xs font-medium text-gray-400 mt-2">
-            PNG, JPG, SVG and WEBP are allowed
-          </p>
-        </label>
+        <TourImagesUpload cover={true} />
 
         <div className="flex flex-col w-full gap-7">
           <FormField
@@ -63,7 +49,7 @@ export default function StepOne() {
             render={({ field }) => (
               <FormItem className="relative grid w-full items-center">
                 <FormLabel htmlFor="title">Tour Name</FormLabel>
-                <FormControl>
+                <FormControl className="m-0">
                   <Input
                     id="title"
                     placeholder="Enter tour name"
@@ -71,7 +57,7 @@ export default function StepOne() {
                     {...field}
                   />
                 </FormControl>
-                <FormMessage className="absolute bottom-[-12px]" />
+                <FormMessage className="absolute bottom-[-20px]" />
               </FormItem>
             )}
           />
@@ -82,7 +68,7 @@ export default function StepOne() {
             render={({ field }) => (
               <FormItem className="relative grid w-full items-center">
                 <FormLabel htmlFor="location">Tour Location</FormLabel>
-                <FormControl>
+                <FormControl className="m-0">
                   <Input
                     id="location"
                     placeholder="Enter tour location"
@@ -90,7 +76,7 @@ export default function StepOne() {
                     {...field}
                   />
                 </FormControl>
-                <FormMessage className="absolute bottom-[-12px]" />
+                <FormMessage className="absolute bottom-[-20px]" />
               </FormItem>
             )}
           />
@@ -101,7 +87,7 @@ export default function StepOne() {
             render={({ field }) => (
               <FormItem className="relative grid w-full items-center">
                 <FormLabel htmlFor="durationDays">Duration</FormLabel>
-                <FormControl>
+                <FormControl className="m-0">
                   <Input
                     type="number"
                     id="durationDays"
@@ -115,7 +101,7 @@ export default function StepOne() {
                     }}
                   />
                 </FormControl>
-                <FormMessage className="absolute bottom-[-12px]" />
+                <FormMessage className="absolute bottom-[-20px]" />
               </FormItem>
             )}
           />
@@ -128,7 +114,7 @@ export default function StepOne() {
                 <FormLabel htmlFor="shortDescription">
                   Short Description
                 </FormLabel>
-                <FormControl>
+                <FormControl className="m-0">
                   <Textarea
                     placeholder="Enter tours short description"
                     id="shortDescription"
@@ -136,7 +122,7 @@ export default function StepOne() {
                     {...field}
                   />
                 </FormControl>
-                <FormMessage className="absolute bottom-[-12px]" />
+                <FormMessage className="absolute bottom-[-20px]" />
               </FormItem>
             )}
           />
@@ -149,7 +135,7 @@ export default function StepOne() {
         render={({ field }) => (
           <FormItem className="relative grid w-full">
             <FormLabel htmlFor="categoryIds">Categories</FormLabel>
-            <FormControl>
+            <FormControl className="m-0">
               <MultiSelect
                 id="categoryIds"
                 options={categoryOptions}
@@ -159,7 +145,7 @@ export default function StepOne() {
                 maxCount={5}
               />
             </FormControl>
-            <FormMessage className="absolute bottom-[-12px]" />
+            <FormMessage className="absolute bottom-[-20px]" />
           </FormItem>
         )}
       />
@@ -170,7 +156,7 @@ export default function StepOne() {
         render={({ field }) => (
           <FormItem className="relative grid w-full">
             <FormLabel htmlFor="description">Description</FormLabel>
-            <FormControl>
+            <FormControl className="m-0">
               <Textarea
                 placeholder="Enter tours description"
                 id="description"
@@ -178,7 +164,7 @@ export default function StepOne() {
                 {...field}
               />
             </FormControl>
-            <FormMessage className="absolute bottom-[-12px]" />
+            <FormMessage className="absolute bottom-[-20px]" />
           </FormItem>
         )}
       />
@@ -205,7 +191,7 @@ export default function StepOne() {
                   onCheckedChange={field.onChange}
                 />
               </FormControl>
-              <FormMessage className="absolute bottom-[-12px]" />
+              <FormMessage className="absolute bottom-[-20px]" />
             </FormItem>
           )}
         />

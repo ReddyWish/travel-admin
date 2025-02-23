@@ -26,6 +26,9 @@ export default function TourForm() {
 
   const methods = useForm<Inputs>({
     resolver: zodResolver(tourFormSchema),
+    defaultValues: {
+      categoryIds: [],
+    },
   });
 
   const { handleSubmit, reset, trigger, control, clearErrors, getValues } =
