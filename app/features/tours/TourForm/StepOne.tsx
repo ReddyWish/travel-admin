@@ -21,8 +21,6 @@ import AccommodationFields from '~/features/tours/components/AccommodationFields
 import TourImagesUpload from '~/features/tours/components/TourImagesUpload';
 
 export default function StepOne() {
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedRating, setSelectedRating] = useState<string>();
   const { data, loading } = useGetCategoriesQuery();
 
   const {
@@ -139,6 +137,7 @@ export default function StepOne() {
               <MultiSelect
                 id="categoryIds"
                 options={categoryOptions}
+                value={field.value}
                 onValueChange={field.onChange}
                 placeholder="Select categories"
                 defaultValue={[]}

@@ -26,6 +26,7 @@ import {
   CommandList,
   CommandSeparator,
 } from '~/shared/components/ui/command';
+import { useEffect } from 'react';
 
 const multiSelectVariants = cva(
   'm-1 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300',
@@ -57,6 +58,7 @@ interface MultiSelectProps
     icon?: React.ComponentType<{ className?: string }>;
   }[];
   onValueChange: (value: string[]) => void;
+  value?: string[];
   defaultValue?: string[];
   placeholder?: string;
   animation?: number;
@@ -74,6 +76,7 @@ export const MultiSelect = React.forwardRef<
     {
       options,
       onValueChange,
+      value,
       variant,
       defaultValue = [],
       placeholder = 'Select options',
@@ -86,10 +89,15 @@ export const MultiSelect = React.forwardRef<
     },
     ref,
   ) => {
-    const [selectedValues, setSelectedValues] =
-      React.useState<string[]>(defaultValue);
+    const [selectedValues, setSelectedValues] = React.useState<string[]>(
+      value || defaultValue,
+    );
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
     const [isAnimating, setIsAnimating] = React.useState(false);
+
+    useEffect(() => {
+      if (value !== undefined) setSelectedValues(value);
+    }, [value]);
 
     const handleInputKeyDown = (
       event: React.KeyboardEvent<HTMLInputElement>,
