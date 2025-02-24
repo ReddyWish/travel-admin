@@ -28,6 +28,7 @@ export default function TourForm() {
     resolver: zodResolver(tourFormSchema),
     defaultValues: {
       categoryIds: [],
+      price: [],
     },
   });
 

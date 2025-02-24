@@ -9,6 +9,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from '~/shared/components/ui/form';
 import { useGetCurrenciesQuery } from '~/features/currencies/CurrenciesTable/__generated__/GetCurrencies';
 import { useEffect } from 'react';
@@ -26,7 +27,6 @@ export default function StepTwo() {
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'price',
-    shouldUnregister: true,
   });
   console.log(fields);
 
@@ -41,7 +41,10 @@ export default function StepTwo() {
   };
 
   const handleAddPriceGroup = () => {
-    append(createPriceGroup());
+    if (fields.length < 10) {
+      append(createPriceGroup());
+    }
+    return;
   };
 
   const handleRemovePriceGroup = (groupIndex: number) => {
@@ -64,10 +67,14 @@ export default function StepTwo() {
     : 0;
 
   useEffect(() => {
-    if (fields.length === 0 && data?.currencies?.length) {
+    if (
+      fields.length === 0 &&
+      data?.currencies?.length &&
+      watch('price')?.length === 0
+    ) {
       append(createPriceGroup());
     }
-  }, [data?.currencies]);
+  }, [data?.currencies, fields.length, append]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -80,9 +87,9 @@ export default function StepTwo() {
                 control={control}
                 name={`price.${currencyIndex}.amount`}
                 render={({ field }) => (
-                  <FormItem className="flex-1">
+                  <FormItem className="relative flex-1">
                     <FormLabel>{currency.code}</FormLabel>
-                    <FormControl>
+                    <FormControl className="m-0">
                       <Input
                         type="number"
                         placeholder={`Price in ${currency.code}`}
@@ -96,6 +103,7 @@ export default function StepTwo() {
                         }}
                       />
                     </FormControl>
+                    <FormMessage className="absolute bottom-[-20px]" />
                   </FormItem>
                 )}
               />
@@ -108,7 +116,7 @@ export default function StepTwo() {
             render={({ field }) => (
               <FormItem className="relative flex-1">
                 <FormLabel>Comment</FormLabel>
-                <FormControl>
+                <FormControl className="m-0">
                   <Textarea
                     placeholder="Describe the price"
                     className="resize-none h-21"
@@ -116,6 +124,7 @@ export default function StepTwo() {
                     onChange={(e) => handleCommentChange(0, e.target.value)}
                   />
                 </FormControl>
+                <FormMessage className="absolute bottom-[-20px]" />
               </FormItem>
             )}
           />
@@ -139,9 +148,9 @@ export default function StepTwo() {
                       control={control}
                       name={`price.${groupIndex * data.currencies.length + currencyIndex}.amount`}
                       render={({ field }) => (
-                        <FormItem className="flex-1">
+                        <FormItem className="relative flex-1">
                           <FormLabel>{currency.code}</FormLabel>
-                          <FormControl>
+                          <FormControl className="m-0">
                             <Input
                               type="number"
                               placeholder={`Price in ${currency.code}`}
@@ -155,6 +164,7 @@ export default function StepTwo() {
                               }}
                             />
                           </FormControl>
+                          <FormMessage className="absolute bottom-[-20px]" />
                         </FormItem>
                       )}
                     />
@@ -193,14 +203,16 @@ export default function StepTwo() {
           );
         })}
 
-      <Button
-        className="mt-5 w-1/5 cursor-pointer"
-        onClick={handleAddPriceGroup}
-        disabled={loading || !data?.currencies?.length}
-        type="button"
-      >
-        Add Price <Plus className="ml-2" />
-      </Button>
+      {fields.length < 10 && (
+        <Button
+          className="mt-5 w-1/5 cursor-pointer"
+          onClick={handleAddPriceGroup}
+          disabled={loading || !data?.currencies?.length}
+          type="button"
+        >
+          Add Price <Plus className="ml-2" />
+        </Button>
+      )}
     </div>
   );
 }
