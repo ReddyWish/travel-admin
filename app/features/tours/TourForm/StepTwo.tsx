@@ -16,7 +16,6 @@ import { useEffect } from 'react';
 
 export default function StepTwo() {
   const { data, loading } = useGetCurrenciesQuery();
-  console.log(data);
   const {
     register,
     control,
@@ -28,7 +27,6 @@ export default function StepTwo() {
     control,
     name: 'price',
   });
-  console.log(fields);
 
   const createPriceGroup = () => {
     if (!data?.currencies?.length) return [];
