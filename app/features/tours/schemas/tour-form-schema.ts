@@ -73,8 +73,8 @@ export function createTourFormSchema(availableCurrencyIds: string[]) {
           order: z.number().int('Order must be a whole number'),
           startTime: z
             .string()
-            .min(1, 'Start time must be at least one symbol long')
-            .max(30, 'Start time must not exceed 30 symbols'),
+            .max(30, 'Start time must not exceed 30 symbols')
+            .optional(),
           title: z
             .string()
             .min(3, 'Title must be at least 3 characters')

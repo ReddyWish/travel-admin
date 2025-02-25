@@ -40,74 +40,85 @@ export default function StepThree() {
 
   return (
     <div className="flex flex-col gap-4">
+      {fields.length === 0 && (
+        <h3 className="font-bold">
+          This step is optional - you can skip it if you prefer
+        </h3>
+      )}
       {fields.map((field, index) => (
-        <div>
+        <div key={field.id}>
           <div
             key={index}
             className="border-1 border-slate-200 rounded-md shadow-sm p-5 relative"
           >
-            <div className="flex flex-col gap-4 pb-5 md:flex-row">
-              <h3 className="text-lg font-medium">Activity {index + 1}</h3>
-              <FormField
-                control={control}
-                name={`program.${index}.startTime`}
-                render={({ field }) => (
-                  <FormItem className="w-full md:w-1/4">
-                    <FormLabel htmlFor={`program.${index}.startTime`}>
-                      Start Time
-                    </FormLabel>
-                    <FormControl className="m-0">
-                      <Input
-                        id={`program.${index}.startTime`}
-                        type="text"
-                        placeholder="9:00 AM or Day 1"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage className="absolute bottom-[-20px]" />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={control}
-                name={`program.${index}.title`}
-                render={({ field }) => (
-                  <FormItem className="w-full md:w-3/4">
-                    <FormLabel htmlFor={`program.${index}.title`}>
-                      Activity
-                    </FormLabel>
-                    <FormControl className="m-0">
-                      <Input
-                        id={`program.${index}.title`}
-                        type="text"
-                        placeholder="Enter activity title"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage className="absolute bottom-[-20px]" />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={control}
-                name={`program.${index}.description`}
-                render={({ field }) => (
-                  <FormItem className="w-full md:w-3/4">
-                    <FormLabel htmlFor={`program.${index}.description`}>
-                      Activity Description
-                    </FormLabel>
-                    <FormControl className="m-0">
-                      <Input
-                        id={`program.${index}.description`}
-                        type="text"
-                        placeholder="Enter activity description"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage className="absolute bottom-[-20px]" />
-                  </FormItem>
-                )}
-              />
+            <div className="flex flex-col gap-5 pb-5 md:flex-row">
+              <h3 className="text-lg font-medium self-center dark:text-white">
+                {index + 1}.
+              </h3>
+              <div className="flex flex-col flex-1 gap-4">
+                <div className="flex w-full gap-5">
+                  <FormField
+                    control={control}
+                    name={`program.${index}.startTime`}
+                    render={({ field }) => (
+                      <FormItem className="relative w-full md:w-1/4">
+                        <FormLabel htmlFor={`program.${index}.startTime`}>
+                          Start Time
+                        </FormLabel>
+                        <FormControl className="m-0">
+                          <Input
+                            id={`program.${index}.startTime`}
+                            type="text"
+                            placeholder="9:00 AM or Day 1"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage className="absolute bottom-[-20px]" />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={control}
+                    name={`program.${index}.title`}
+                    render={({ field }) => (
+                      <FormItem className="relative w-full md:w-3/4">
+                        <FormLabel htmlFor={`program.${index}.title`}>
+                          Activity
+                        </FormLabel>
+                        <FormControl className="m-0">
+                          <Input
+                            id={`program.${index}.title`}
+                            type="text"
+                            placeholder="Enter activity title"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage className="absolute bottom-[-20px]" />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <FormField
+                  control={control}
+                  name={`program.${index}.description`}
+                  render={({ field }) => (
+                    <FormItem className="relative w-full">
+                      <FormLabel htmlFor={`program.${index}.description`}>
+                        Activity Description
+                      </FormLabel>
+                      <FormControl className="m-0">
+                        <Textarea
+                          id={`program.${index}.description`}
+                          placeholder="Enter activity description"
+                          {...field}
+                          className="resize-none"
+                        />
+                      </FormControl>
+                      <FormMessage className="absolute bottom-[-20px]" />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
             <Button
               size="icon"
@@ -120,13 +131,23 @@ export default function StepThree() {
         </div>
       ))}
 
-      {fields.length < 10 && (
+      {fields.length === 0 && (
         <Button
-          className="mt-4 w-full md:w-1/3"
+          className="mt-4 w-full"
           onClick={handleAddProgram}
           type="button"
         >
-          Add Program <Plus className="ml-2" />
+          Create Program
+        </Button>
+      )}
+
+      {fields.length < 10 && fields.length !== 0 && (
+        <Button
+          className="mt-4 w-full"
+          onClick={handleAddProgram}
+          type="button"
+        >
+          Add Program Item <Plus className="ml-2" />
         </Button>
       )}
     </div>

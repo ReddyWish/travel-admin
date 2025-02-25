@@ -153,6 +153,7 @@ export default function StepTwo() {
                               type="number"
                               placeholder={`Price in ${currency.code}`}
                               {...field}
+                              value={field.value || ''}
                               onChange={(e) => {
                                 field.onChange(Number(e.target.value));
                                 setValue(

@@ -16,6 +16,7 @@ import {
   MAX_IMAGES_LENGTH,
 } from '~/features/tours/constants/tourImagesParams';
 import type { TourImage } from '~/__generated__/types';
+import { Badge } from '~/shared/components/ui/badge';
 
 type TourImageUploadProps = {
   cover?: boolean;
@@ -69,6 +70,7 @@ export default function TourImagesUpload({
       } else {
         setValue('images', [...images, ...newImages], { shouldValidate: true });
       }
+      e.target.value = '';
     } catch (error) {
       setError('Failed to upload image(s)');
     }
@@ -164,13 +166,19 @@ export default function TourImagesUpload({
                             alt={`Tour image ${index + 1}`}
                             className="w-full h-full object-cover rounded-md"
                           />
-                          <button
-                            type="button"
-                            onClick={() => removeImage(index)}
-                            className="absolute top-2 right-2 p-1 bg-white rounded-full shadow-md hover:bg-gray-100 transition-colors"
-                          >
-                            <X className="w-4 h-4" />
-                          </button>
+                          {index === 0 ? (
+                            <Badge className="absolute top-2 right-2 px-3 py-1 bg-white rounded-full shadow-md hover:bg-gray-100 transition-colors">
+                              Cover
+                            </Badge>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => removeImage(index)}
+                              className="absolute top-2 right-2 p-1 bg-white rounded-full shadow-md hover:bg-gray-100 transition-colors"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          )}
                         </div>
                       ))}
                     </div>
