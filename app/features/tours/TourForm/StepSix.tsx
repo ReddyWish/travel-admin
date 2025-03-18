@@ -1,3 +1,15 @@
+import { useFormContext } from 'react-hook-form';
+import { z } from 'zod';
+import { createTourFormSchema } from '~/features/tours/schemas/tour-form-schema';
+import { Button } from '~/shared/components/ui/button';
+
 export default function StepSix() {
-  return <h1>Step Six</h1>;
+  const {
+    formState: { isValid, isDirty },
+  } = useFormContext();
+  return (
+    <Button type="submit" disabled={!isValid}>
+      Create Tour
+    </Button>
+  );
 }

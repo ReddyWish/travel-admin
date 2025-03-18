@@ -45,9 +45,11 @@ export function createTourFormSchema(availableCurrencyIds: string[]) {
     price: z
       .array(
         z.object({
-          currencyId: z.string().nonempty('Currency is required'),
+          currencyId: z
+            .string({ required_error: 'Currency is required' })
+            .nonempty('Currency is required'),
           amount: z
-            .number()
+            .number({ required_error: 'Price is required' })
             .positive('Price must be greater than zero')
             .max(1000000, 'Price cannot exceed 1,000,000'),
           comment: z

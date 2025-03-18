@@ -1,6 +1,4 @@
-import { Title } from '~/shared/components/Title';
 import { Input } from '~/shared/components/ui/input';
-import { Label } from '~/shared/components/ui/label';
 import { Textarea } from '~/shared/components/ui/textarea';
 import { Plus, X } from 'lucide-react';
 import { Button } from '~/shared/components/ui/button';

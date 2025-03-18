@@ -12,11 +12,30 @@ import { FormProvider, type SubmitHandler, useForm } from 'react-hook-form';
 import { useGetCurrenciesQuery } from '~/features/currencies/CurrenciesTable/__generated__/GetCurrencies';
 import { createTourFormSchema } from '~/features/tours/schemas/tour-form-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useCreateTourMutation } from '~/features/tours/TourForm/__generated__/CreateTour';
+import { toast } from '~/hooks/use-toast';
 
 export default function TourForm() {
   const [currentStep, setCurrentStep] = useState(0);
 
   const { data, loading } = useGetCurrenciesQuery();
+
+  const [createTour, { loading: createTourLoading }] = useCreateTourMutation({
+    onCompleted: (data) => {
+      toast({
+        title: 'Success',
+        description: `Tour ${data.createTour.title} successfully created.`,
+      });
+      setCurrentStep(0);
+      reset();
+    },
+    onError: (error) => {
+      toast({
+        title: 'Error',
+        description: `Error while creating the tour`,
+      });
+    },
+  });
 
   const currencyIds = data?.currencies.map((currency) => currency.id);
 
@@ -43,6 +62,15 @@ export default function TourForm() {
 
   const processForm: SubmitHandler<Inputs> = async (data) => {
     console.log(data);
+    try {
+      await createTour({
+        variables: {
+          input: data,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   type FieldName = keyof Inputs;
@@ -118,7 +146,7 @@ export default function TourForm() {
 
       {/*FORM*/}
       <FormProvider {...methods}>
-        <form>
+        <form onSubmit={submitForm}>
           <FormStep {...stepProps}>{renderStep()}</FormStep>
         </form>
       </FormProvider>
