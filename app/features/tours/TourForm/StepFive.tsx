@@ -77,7 +77,7 @@ export default function StepFive() {
               />
             )}
             {inclusionsFields.map((field, index) => (
-              <div className="flex gap-1">
+              <div className="flex gap-1" key={field.id}>
                 <FormField
                   control={control}
                   name={`inclusions.${index}.description`}
@@ -116,7 +116,7 @@ export default function StepFive() {
               </Button>
             )}
           </div>
-          <div className="flex flex-col gap-2 w-full">
+          <div className="flex flex-col gap-4 w-full">
             {exclusionsFields.length === 0 && (
               <Input
                 placeholder="Enter what's excluded"
@@ -125,7 +125,7 @@ export default function StepFive() {
               />
             )}
             {exclusionsFields.map((field, index) => (
-              <div className="flex gap-1">
+              <div className="flex gap-1" key={field.id}>
                 <FormField
                   control={control}
                   name={`exclusions.${index}.description`}

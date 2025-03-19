@@ -45,11 +45,11 @@ export default function Sidebar({
   return (
     <>
       <Button
-        className="fixed top-[24px] left-[28px] px-1 bg-transparent hover:bg-slate-200 shadow-none [&_svg]:size-5"
+        className="fixed top-[24px] left-0 px-1 bg-transparent hover:bg-slate-200 shadow-none [&_svg]:size-6 border-0"
         onClick={toggleSideBar}
         ref={buttonRef}
       >
-        <PanelLeftOpen className="text-black" />
+        <PanelLeftOpen className="text-slate-500 dark:text-white" />
       </Button>
       <aside
         id="default-sidebar"

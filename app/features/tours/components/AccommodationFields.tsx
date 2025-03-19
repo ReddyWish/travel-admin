@@ -10,7 +10,7 @@ import {
 } from '~/shared/components/ui/form';
 import { Input } from '~/shared/components/ui/input';
 import Rating from '~/shared/components/Rating';
-import type { AccommodationRating } from '~/features/tours/types/AccommodationRating';
+import { AccommodationStars } from '~/features/tours/types/AccommodationStars';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,24 +18,29 @@ import {
   DropdownMenuTrigger,
 } from '~/shared/components/ui/dropdown-menu';
 import { cn } from '~/lib/cn';
-
-const HOTEL_RATINGS: Record<AccommodationRating, number> = {
-  THREE_STAR: 3,
-  FOUR_STAR: 4,
-  FIVE_STAR: 5,
-} as const;
+import { HOTEL_RATINGS } from '~/features/tours/constants/hotelRatings';
 
 interface RatingOption {
   label: React.ReactNode;
-  value: AccommodationRating;
+  value: AccommodationStars;
 }
 
-const hotelRatingOptions: RatingOption[] = Object.entries(HOTEL_RATINGS).map(
-  ([name, rating]) => ({
-    label: <Rating rating={rating} className="text-sky-300" />,
-    value: name as AccommodationRating,
-  }),
-);
+const hotelRatingOptions: RatingOption[] = [
+  {
+    label: (
+      <Rating rating={HOTEL_RATINGS.THREE_STAR} className="text-sky-300" />
+    ),
+    value: AccommodationStars.ThreeStar,
+  },
+  {
+    label: <Rating rating={HOTEL_RATINGS.FOUR_STAR} className="text-sky-300" />,
+    value: AccommodationStars.FourStar,
+  },
+  {
+    label: <Rating rating={HOTEL_RATINGS.FIVE_STAR} className="text-sky-300" />,
+    value: AccommodationStars.FiveStar,
+  },
+];
 
 export default function AccommodationFields() {
   const { control, setValue, watch } = useFormContext<Inputs>();
@@ -44,11 +49,13 @@ export default function AccommodationFields() {
 
   useEffect(() => {
     if (!accommodations || accommodations.length === 0) {
-      setValue('accommodations', [{ stars: 'THREE_STAR', hotelName: '' }]);
+      setValue('accommodations', [
+        { stars: AccommodationStars.ThreeStar, hotelName: '' },
+      ]);
     }
   }, [setValue, accommodations]);
 
-  const handleRatingChange = (value: AccommodationRating) => {
+  const handleRatingChange = (value: AccommodationStars) => {
     setValue('accommodations.0.stars', value, { shouldValidate: true });
   };
 

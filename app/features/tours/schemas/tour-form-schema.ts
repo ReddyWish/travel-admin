@@ -1,4 +1,15 @@
 import { z } from 'zod';
+import { AccommodationStars } from '~/features/tours/types/AccommodationStars';
+
+const accommodationSchema = z.object({
+  stars: z.nativeEnum(AccommodationStars, {
+    errorMap: () => ({ message: 'Invalid star rating' }),
+  }),
+  hotelName: z
+    .string()
+    .min(2, 'Hotel name must be at least 2 characters')
+    .max(30, 'Hotel name must not exceed 30 characters'),
+});
 
 export function createTourFormSchema(availableCurrencyIds: string[]) {
   return z.object({
@@ -126,19 +137,6 @@ export function createTourFormSchema(availableCurrencyIds: string[]) {
       .optional()
       .default([]),
 
-    accommodations: z
-      .array(
-        z.object({
-          stars: z.enum(['THREE_STAR', 'FOUR_STAR', 'FIVE_STAR'], {
-            errorMap: () => ({ message: 'Invalid star rating' }),
-          }),
-          hotelName: z
-            .string()
-            .min(2, 'Hotel name must be at least 2 characters')
-            .max(30, 'Hotel name must not exceed 30 characters'),
-        }),
-      )
-      .optional()
-      .default([]),
+    accommodations: z.array(accommodationSchema).optional().default([]),
   });
 }

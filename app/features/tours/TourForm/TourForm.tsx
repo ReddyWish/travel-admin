@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { createContext, type ReactNode, useContext, useState } from 'react';
 import { z } from 'zod';
 import { FORM_STEPS } from '~/features/tours/constants/formSteps';
 import StepOne from '~/features/tours/TourForm/StepOne';
@@ -14,6 +14,7 @@ import { createTourFormSchema } from '~/features/tours/schemas/tour-form-schema'
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCreateTourMutation } from '~/features/tours/TourForm/__generated__/CreateTour';
 import { toast } from '~/hooks/use-toast';
+import { TourFormContextProvider } from '~/features/tours/TourForm/TourFormContext';
 
 export default function TourForm() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -75,6 +76,32 @@ export default function TourForm() {
 
   type FieldName = keyof Inputs;
 
+  const navigateToStep = async (stepIndex: number) => {
+    if (stepIndex === currentStep) return;
+
+    if (stepIndex > currentStep) {
+      for (let i = currentStep; i < stepIndex; i++) {
+        const fields = FORM_STEPS[i].fields;
+        const isValid = await trigger(fields as FieldName[], {
+          shouldFocus: true,
+        });
+
+        if (!isValid) {
+          toast({
+            title: 'Information is not Complete',
+            description: `Please complete Step ${i + 1} before proceeding.`,
+            variant: 'default',
+          });
+          return;
+        }
+      }
+    } else {
+      clearErrors();
+    }
+
+    setCurrentStep(stepIndex);
+  };
+
   const goToNextStep = async () => {
     if (currentStep >= FORM_STEPS.length - 1) return;
     const fields = FORM_STEPS[currentStep].fields;
@@ -120,36 +147,45 @@ export default function TourForm() {
         <ol role="list" className="space-y-4 md:flex md:space-x-8 md:space-y-0">
           {FORM_STEPS.map((step, index) => (
             <li key={step.name} className="md:flex-1">
-              {currentStep >= index ? (
-                <div className="group flex w-full flex-col border-l-4 border-sky-300 py-2 pl-4 md:border-l-0 md:border-t-4 md:pb-0 md:pl-0 md:pt-4 transition-colors delay-100">
-                  <span className="text-sm font-medium text-sky-300 transition-all delay-150">
-                    {step.id}
-                  </span>
-                  <span className="text-sm font-medium text-black dark:text-white">
-                    {step.name}
-                  </span>
-                </div>
-              ) : (
-                <div className="group flex w-full flex-col border-l-4 border-gray-200 py-2 pl-4 md:border-l-0 md:border-t-4 md:pb-0 md:pl-0 md:pt-4 transition-colors delay-100">
-                  <span className="text-sm font-medium text-gray-500 transition-colors delay-100">
-                    {step.id}
-                  </span>
-                  <span className="text-sm font-medium text-gray-500">
-                    {step.name}
-                  </span>
-                </div>
-              )}
+              <button
+                type="button"
+                onClick={() => navigateToStep(index)}
+                className="w-full text-left focus:outline-none"
+                disabled={createTourLoading}
+              >
+                {currentStep >= index ? (
+                  <div className="group flex w-full flex-col border-l-4 border-sky-300 py-2 pl-4 md:border-l-0 md:border-t-4 md:pb-0 md:pl-0 md:pt-4 transition-colors delay-100">
+                    <span className="text-sm font-medium text-sky-300 transition-all delay-150">
+                      {step.id}
+                    </span>
+                    <span className="text-sm font-medium text-black dark:text-white">
+                      {step.name}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="group flex w-full flex-col border-l-4 border-gray-200 py-2 pl-4 md:border-l-0 md:border-t-4 md:pb-0 md:pl-0 md:pt-4 transition-colors delay-100">
+                    <span className="text-sm font-medium text-gray-500 transition-colors delay-100">
+                      {step.id}
+                    </span>
+                    <span className="text-sm font-medium text-gray-500">
+                      {step.name}
+                    </span>
+                  </div>
+                )}
+              </button>
             </li>
           ))}
         </ol>
       </nav>
 
       {/*FORM*/}
-      <FormProvider {...methods}>
-        <form onSubmit={submitForm}>
-          <FormStep {...stepProps}>{renderStep()}</FormStep>
-        </form>
-      </FormProvider>
+      <TourFormContextProvider>
+        <FormProvider {...methods}>
+          <form onSubmit={submitForm}>
+            <FormStep {...stepProps}>{renderStep()}</FormStep>
+          </form>
+        </FormProvider>
+      </TourFormContextProvider>
 
       {/*NAVIGATION*/}
       <div className="mt-8 pt-5">
