@@ -109,7 +109,7 @@ export function createTourFormSchema(availableCurrencyIds: string[]) {
         }),
       )
       .refine((images) => images.some((image) => image.isPrimary), {
-        message: 'Please add a tour cover image',
+        message: 'Please add tour cover image',
       })
       .default([]),
 

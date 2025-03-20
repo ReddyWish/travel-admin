@@ -2,7 +2,7 @@ import { UploadIcon } from '~/shared/icons/UploadIcon';
 import { Input } from '~/shared/components/ui/input';
 import { Textarea } from '~/shared/components/ui/textarea';
 import { MultiSelect } from '~/shared/components/MultiSelect';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useGetCategoriesQuery } from '~/features/tours/TourForm/__generated__/GetCategories';
 import { HOTEL_RATINGS } from '~/features/tours/constants/hotelRatings';
 import Rating from '~/shared/components/Rating';
@@ -19,15 +19,12 @@ import { useFormContext } from 'react-hook-form';
 import type { Inputs } from '~/features/tours/types/FormInputs';
 import AccommodationFields from '~/features/tours/components/AccommodationFields';
 import TourImagesUpload from '~/features/tours/components/TourImagesUpload';
-import { useTourFormContextData } from '~/features/tours/TourForm/TourFormContext';
 
 export default function StepOne() {
-  const { setCategoryNames } = useTourFormContextData();
   const { data, loading } = useGetCategoriesQuery();
 
   const {
     control,
-    setValue,
     formState: { errors },
   } = useFormContext<Inputs>();
 
@@ -142,12 +139,6 @@ export default function StepOne() {
                 value={field.value}
                 onValueChange={(newValue) => {
                   field.onChange(newValue);
-                  const names = newValue.map(
-                    (id) =>
-                      categoryOptions.find((option) => option.value === id)
-                        ?.label || '',
-                  );
-                  setCategoryNames(names);
                 }}
                 placeholder="Select categories"
                 defaultValue={[]}
@@ -169,7 +160,7 @@ export default function StepOne() {
               <Textarea
                 placeholder="Enter tours description"
                 id="description"
-                className="resize-none h-21"
+                className="resize-none h-30"
                 {...field}
               />
             </FormControl>

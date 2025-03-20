@@ -14,10 +14,7 @@ import {
 
 export default function StepThree() {
   const {
-    register,
     control,
-    watch,
-    setValue,
     formState: { errors },
   } = useFormContext<Inputs>();
   const { fields, append, remove } = useFieldArray({

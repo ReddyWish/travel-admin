@@ -1,0 +1,44 @@
+query GetTour($id: ID!) {
+    tour(id: $id) {
+        id
+        title
+        location
+        description
+        durationDays
+        shortDescription
+        program {
+            title
+            startTime
+            order
+            description
+            id
+        }
+        price {
+            comment
+            amount
+            currencyId
+        }
+        isBestSeller
+        inclusions {
+            description
+        }
+        images {
+            url
+            isPrimary
+            id
+        }
+        exclusions {
+            description
+        }
+        categories {
+            name
+            id
+            description
+        }
+        accommodations {
+            hotelName
+            id
+            stars
+        }
+    }
+}

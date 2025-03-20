@@ -6,7 +6,7 @@ import TourForm from '~/features/tours/TourForm/TourForm';
 
 export default function AddTour() {
   const location = useLocation();
-  console.log(location);
+
   return (
     <>
       <CustomBreadCrumbs

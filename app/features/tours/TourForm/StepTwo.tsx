@@ -17,7 +17,6 @@ import { useEffect } from 'react';
 export default function StepTwo() {
   const { data, loading } = useGetCurrenciesQuery();
   const {
-    register,
     control,
     watch,
     setValue,

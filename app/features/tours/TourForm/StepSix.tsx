@@ -20,18 +20,31 @@ import type { AccommodationStars } from '~/features/tours/types/AccommodationSta
 import { Badge } from '~/shared/components/ui/badge';
 import { Card, CardContent } from '~/shared/components/ui/card';
 import { Separator } from '~/shared/components/ui/separator';
-import { useGetCategoriesQuery } from '~/features/tours/TourForm/__generated__/GetCategories';
-import { useTourFormContextData } from '~/features/tours/TourForm/TourFormContext';
 import { Button } from '~/shared/components/ui/button';
+import Rating from '~/shared/components/Rating';
+import { useGetTourCategoriesQuery } from '~/features/tours/TourForm/__generated__/GetTourCategories';
+import { useParams } from 'react-router';
+import { Spinner } from '~/shared/components/Spinner';
 
-export default function StepSix() {
-  const { categoryNames } = useTourFormContextData();
-  const { data, loading } = useGetCategoriesQuery();
+type StepSixProps = {
+  isLoading: boolean;
+};
+
+export default function StepSix({ isLoading }: StepSixProps) {
+  const { id } = useParams();
+  const isEditMode = Boolean(id);
+  const { data: tourCategoriesData, loading: tourCategoriesDataLoading } =
+    useGetTourCategoriesQuery({
+      variables: { id: id || '' },
+      skip: !isEditMode || !id,
+    });
   const { getValues } = useFormContext();
   const formData = getValues();
   const {
-    formState: { isValid, isDirty },
+    formState: { isValid },
   } = useFormContext();
+
+  console.log(tourCategoriesData);
 
   const getCurrencySymbol = (currencyId: string): string => {
     const currencies: Record<string, string> = {
@@ -50,7 +63,9 @@ export default function StepSix() {
   );
 
   return (
-    <div className="flex flex-col gap-5 w-full">
+    <div
+      className={`relative flex flex-col gap-5 w-full ${isLoading && 'opacity-50'}`}
+    >
       {coverImage && (
         <div className="relative w-full rounded-xl overflow-hidden h-64 sm:h-72 md:h-80">
           <img
@@ -97,9 +112,9 @@ export default function StepSix() {
                   <Tag size={14} /> Categories
                 </h4>
                 <div className="flex flex-wrap gap-2 mt-1">
-                  {categoryNames?.map((name: string, index: number) => (
+                  {tourCategoriesData?.tour?.categories.map(({ name, id }) => (
                     <Badge
-                      key={index}
+                      key={id}
                       className="px-2 py-1 text-xs text-black dark:text-white"
                     >
                       {name}
@@ -121,19 +136,15 @@ export default function StepSix() {
                     {formData.accommodations[0]?.hotelName}
                   </p>
                   <div className="ml-2 flex items-center">
-                    {Array(
-                      HOTEL_RATINGS[
-                        formData.accommodations[0]?.stars as AccommodationStars
-                      ] || 0,
-                    )
-                      .fill(0)
-                      .map((_, i) => (
-                        <Star
-                          key={i}
-                          size={14}
-                          className="text-yellow-400 fill-yellow-400"
-                        />
-                      ))}
+                    <Rating
+                      rating={
+                        HOTEL_RATINGS[
+                          formData.accommodations[0]
+                            ?.stars as AccommodationStars
+                        ]
+                      }
+                      className="w-20 text-yellow-400 fill-yellow-400"
+                    />
                   </div>
                 </div>
               </div>
@@ -336,8 +347,8 @@ export default function StepSix() {
           </CardContent>
         </Card>
       )}
-      <Button type="submit" disabled={!isValid}>
-        Create Tour
+      <Button type="submit" disabled={!isValid || isLoading}>
+        {isLoading ? <Spinner /> : isEditMode ? 'Update Tour' : 'Create Tour'}
       </Button>
     </div>
   );

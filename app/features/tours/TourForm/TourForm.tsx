@@ -1,5 +1,6 @@
-import { createContext, type ReactNode, useContext, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { z } from 'zod';
+import { useNavigate } from 'react-router';
 import { FORM_STEPS } from '~/features/tours/constants/formSteps';
 import StepOne from '~/features/tours/TourForm/StepOne';
 import StepThree from '~/features/tours/TourForm/StepThree';
@@ -14,12 +15,27 @@ import { createTourFormSchema } from '~/features/tours/schemas/tour-form-schema'
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCreateTourMutation } from '~/features/tours/TourForm/__generated__/CreateTour';
 import { toast } from '~/hooks/use-toast';
-import { TourFormContextProvider } from '~/features/tours/TourForm/TourFormContext';
+import { useGetTourQuery } from '~/features/tours/TourForm/__generated__/GetTour';
+import { useUpdateTourMutation } from '~/features/tours/TourForm/__generated__/UpdateTour';
+import { Spinner } from '~/shared/components/Spinner';
 
-export default function TourForm() {
+export default function TourForm({ id }: { id?: string }) {
   const [currentStep, setCurrentStep] = useState(0);
 
+  const isEditMode = Boolean(id);
+
+  const navigate = useNavigate();
+
   const { data, loading } = useGetCurrenciesQuery();
+
+  const { data: tourData, loading: tourLoading } = useGetTourQuery({
+    variables: { id: id || '' },
+    skip: !isEditMode,
+  });
+
+  const tour = tourData?.tour;
+
+  console.log(tour);
 
   const [createTour, { loading: createTourLoading }] = useCreateTourMutation({
     onCompleted: (data) => {
@@ -29,11 +45,30 @@ export default function TourForm() {
       });
       setCurrentStep(0);
       reset();
+      navigate('/tours');
     },
     onError: (error) => {
       toast({
         title: 'Error',
         description: `Error while creating the tour`,
+      });
+    },
+  });
+
+  const [updateTour, { loading: updateTourLoading }] = useUpdateTourMutation({
+    onCompleted: (data) => {
+      toast({
+        title: 'Success',
+        description: `Tour ${data.updateTour.title} successfully created.`,
+      });
+      setCurrentStep(0);
+      reset();
+      navigate('/tours');
+    },
+    onError: (error) => {
+      toast({
+        title: 'Error',
+        description: `Error while updating the tour`,
       });
     },
   });
@@ -52,8 +87,7 @@ export default function TourForm() {
     },
   });
 
-  const { handleSubmit, reset, trigger, control, clearErrors, getValues } =
-    methods;
+  const { handleSubmit, reset, trigger, clearErrors, getValues } = methods;
 
   console.log(getValues());
 
@@ -63,14 +97,19 @@ export default function TourForm() {
 
   const processForm: SubmitHandler<Inputs> = async (data) => {
     console.log(data);
-    try {
+    if (isEditMode && id) {
+      await updateTour({
+        variables: {
+          id,
+          input: data,
+        },
+      });
+    } else {
       await createTour({
         variables: {
           input: data,
         },
       });
-    } catch (error) {
-      console.error(error);
     }
   };
 
@@ -134,11 +173,50 @@ export default function TourForm() {
       case 4:
         return <StepFive />;
       case 5:
-        return <StepSix />;
+        return <StepSix isLoading={createTourLoading || updateTourLoading} />;
       default:
         return null;
     }
   };
+
+  useEffect(() => {
+    if (isEditMode && tour) {
+      reset({
+        title: tour?.title || '',
+        shortDescription: tour?.shortDescription || '',
+        description: tour?.description || '',
+        location: tour?.location || '',
+        isBestSeller: tour?.isBestSeller,
+        categoryIds: tour.categories.map((cat) => cat.id),
+        durationDays: tour?.durationDays,
+        price: tour?.price.map((p) => ({
+          currencyId: p.currencyId,
+          amount: p.amount,
+          comment: p.comment || '',
+        })),
+        program: tour?.program.map((p) => ({
+          order: p.order,
+          title: p.title,
+          description: p.description,
+          startTime: p.startTime || '',
+        })),
+        images: tour?.images.map((img) => ({
+          url: img.url,
+          isPrimary: img.isPrimary,
+        })),
+        inclusions: tour?.inclusions.map((item) => ({
+          description: item.description,
+        })),
+        exclusions: tour?.exclusions.map((item) => ({
+          description: item.description,
+        })),
+        accommodations: tour?.accommodations.map((acc) => ({
+          hotelName: acc.hotelName,
+          stars: acc.stars,
+        })),
+      });
+    }
+  }, [isEditMode, tour]);
 
   return (
     <div className="pb-5">
@@ -179,22 +257,26 @@ export default function TourForm() {
       </nav>
 
       {/*FORM*/}
-      <TourFormContextProvider>
+      {tourLoading ? (
+        <div className="flex items-center justify-center h-[70dvh]">
+          <Spinner />
+        </div>
+      ) : (
         <FormProvider {...methods}>
           <form onSubmit={submitForm}>
             <FormStep {...stepProps}>{renderStep()}</FormStep>
           </form>
         </FormProvider>
-      </TourFormContextProvider>
+      )}
 
       {/*NAVIGATION*/}
-      <div className="mt-8 pt-5">
+      <div className="mt-8 py-5">
         <div className="flex justify-between">
           <button
             type="button"
             onClick={goToPrevStep}
             disabled={currentStep === 0}
-            className="rounded bg-white px-2 py-1 text-md font-semibold text-black shadow-md hover:text-sky-300 disabled:cursor-not-allowed disabled:opacity-50 transition-all delay-100"
+            className="rounded bg-white px-4 py-2 text-md text-black shadow-md hover:text-sky-400 hover:shadow-l disabled:cursor-not-allowed disabled:opacity-50 transition-all delay-100"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -215,7 +297,7 @@ export default function TourForm() {
             type="button"
             onClick={goToNextStep}
             disabled={currentStep === FORM_STEPS.length - 1}
-            className="rounded bg-white px-2 py-1 text-md font-semibold text-black shadow-md hover:text-sky-300 disabled:cursor-not-allowed disabled:opacity-50 transition-all delay-100"
+            className="rounded bg-white px-4 py-2 text-md text-black shadow-md hover:text-sky-400 disabled:cursor-not-allowed disabled:opacity-50 transition-all delay-100"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

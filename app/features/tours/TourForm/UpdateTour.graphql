@@ -1,0 +1,5 @@
+mutation UpdateTour($id: ID!, $input: TourUpdateInput!) {
+    updateTour(id: $id, input: $input) {
+        title
+    }
+}

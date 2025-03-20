@@ -14,10 +14,7 @@ import {
 
 export default function StepFive() {
   const {
-    register,
     control,
-    watch,
-    setValue,
     formState: { errors },
   } = useFormContext<Inputs>();
   const {

@@ -28,32 +28,30 @@ interface RatingOption {
 const hotelRatingOptions: RatingOption[] = [
   {
     label: (
-      <Rating rating={HOTEL_RATINGS.THREE_STAR} className="text-sky-300" />
+      <Rating rating={HOTEL_RATINGS.THREE_STAR} className="text-yellow-400 " />
     ),
     value: AccommodationStars.ThreeStar,
   },
   {
-    label: <Rating rating={HOTEL_RATINGS.FOUR_STAR} className="text-sky-300" />,
+    label: (
+      <Rating rating={HOTEL_RATINGS.FOUR_STAR} className="text-yellow-400" />
+    ),
     value: AccommodationStars.FourStar,
   },
   {
-    label: <Rating rating={HOTEL_RATINGS.FIVE_STAR} className="text-sky-300" />,
+    label: (
+      <Rating
+        rating={HOTEL_RATINGS.FIVE_STAR}
+        className="text-yellow-400 fill-yellow-400"
+      />
+    ),
     value: AccommodationStars.FiveStar,
   },
 ];
 
 export default function AccommodationFields() {
   const { control, setValue, watch } = useFormContext<Inputs>();
-  const accommodations = watch('accommodations');
   const currentRating = watch('accommodations.0.stars');
-
-  useEffect(() => {
-    if (!accommodations || accommodations.length === 0) {
-      setValue('accommodations', [
-        { stars: AccommodationStars.ThreeStar, hotelName: '' },
-      ]);
-    }
-  }, [setValue, accommodations]);
 
   const handleRatingChange = (value: AccommodationStars) => {
     setValue('accommodations.0.stars', value, { shouldValidate: true });

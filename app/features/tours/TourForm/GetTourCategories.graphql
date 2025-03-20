@@ -1,0 +1,9 @@
+query GetTourCategories($id: ID!) {
+    tour(id: $id) {
+        categories {
+            name
+            id
+            description
+        }
+    }
+}
