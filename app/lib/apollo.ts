@@ -1,8 +1,8 @@
 import { ApolloClient } from '@apollo/client/core';
-import { createHttpLink } from '@apollo/client/link/http';
 import { InMemoryCache } from '@apollo/client/cache';
+import createUploadLink from 'apollo-upload-client/createUploadLink.mjs';
 
-const httpLink = createHttpLink({
+const httpLink = createUploadLink({
   uri: 'http://localhost:4000/graphql',
 });
 

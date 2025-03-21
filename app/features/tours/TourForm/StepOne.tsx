@@ -1,11 +1,7 @@
-import { UploadIcon } from '~/shared/icons/UploadIcon';
 import { Input } from '~/shared/components/ui/input';
 import { Textarea } from '~/shared/components/ui/textarea';
 import { MultiSelect } from '~/shared/components/MultiSelect';
-import { useEffect, useState } from 'react';
 import { useGetCategoriesQuery } from '~/features/tours/TourForm/__generated__/GetCategories';
-import { HOTEL_RATINGS } from '~/features/tours/constants/hotelRatings';
-import Rating from '~/shared/components/Rating';
 import {
   FormControl,
   FormDescription,

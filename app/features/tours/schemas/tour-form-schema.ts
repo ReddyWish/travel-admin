@@ -46,6 +46,7 @@ export function createTourFormSchema(availableCurrencyIds: string[]) {
     durationDays: z
       .number({
         required_error: 'Duration is required and must be at least 1 day',
+        invalid_type_error: 'Duration is required and must be at least 1 day',
       })
       .int('Duration must be a whole number')
       .min(1, 'Duration must be at least 1 day')
@@ -104,7 +105,9 @@ export function createTourFormSchema(availableCurrencyIds: string[]) {
     images: z
       .array(
         z.object({
-          url: z.string().url('Invalid URL format'),
+          id: z.string().optional(),
+          url: z.string().optional(),
+          file: z.any().optional(),
           isPrimary: z.boolean().default(false),
         }),
       )

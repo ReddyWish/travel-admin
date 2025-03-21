@@ -28,13 +28,19 @@ export function EditDeleteDropDown({
           align="end"
           className="flex-col px-2 py-2 bg-white"
         >
-          <DropdownMenuItem className="flex gap-2 p-0 pb-[6px]">
+          <DropdownMenuItem
+            onClick={onEdit}
+            className="flex gap-2 p-1 cursor-pointer hover:bg-gray-50"
+          >
             <SquarePen className="w-4 h-4" />
-            <button onClick={onEdit}>Edit</button>
+            Edit
           </DropdownMenuItem>
-          <DropdownMenuItem className="flex gap-2 p-0 text-red-500">
+          <DropdownMenuItem
+            onClick={onDelete}
+            className="flex gap-2 p-1 text-red-500 cursor-pointer hover:bg-gray-50"
+          >
             <Trash2 className="w-4 h-4" />
-            <button onClick={onDelete}>Delete</button>
+            Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

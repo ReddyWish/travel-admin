@@ -48,6 +48,7 @@ export default function TourForm({ id }: { id?: string }) {
       navigate('/tours');
     },
     onError: (error) => {
+      console.log(error);
       toast({
         title: 'Error',
         description: `Error while creating the tour`,
@@ -59,7 +60,7 @@ export default function TourForm({ id }: { id?: string }) {
     onCompleted: (data) => {
       toast({
         title: 'Success',
-        description: `Tour ${data.updateTour.title} successfully created.`,
+        description: `Tour ${data.updateTour.title} successfully updated.`,
       });
       setCurrentStep(0);
       reset();
@@ -96,7 +97,6 @@ export default function TourForm({ id }: { id?: string }) {
   });
 
   const processForm: SubmitHandler<Inputs> = async (data) => {
-    console.log(data);
     if (isEditMode && id) {
       await updateTour({
         variables: {
@@ -263,7 +263,7 @@ export default function TourForm({ id }: { id?: string }) {
         </div>
       ) : (
         <FormProvider {...methods}>
-          <form onSubmit={submitForm}>
+          <form onSubmit={submitForm} encType="multipart/form-data">
             <FormStep {...stepProps}>{renderStep()}</FormStep>
           </form>
         </FormProvider>

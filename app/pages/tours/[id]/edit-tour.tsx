@@ -2,7 +2,7 @@ import { useParams } from 'react-router';
 import CustomBreadCrumbs from '~/shared/components/CustomBreadCrumbs';
 import { BREADCRUMBS_CONFIG } from '~/shared/constants/breadcrumbs';
 import TourForm from '~/features/tours/TourForm/TourForm';
-import { Spinner } from '~/shared/components/Spinner';
+import { Title } from '~/shared/components/Title';
 
 export default function EditTour() {
   const { id } = useParams();
@@ -10,7 +10,9 @@ export default function EditTour() {
   return (
     <div>
       <CustomBreadCrumbs paths={BREADCRUMBS_CONFIG.TOURS.EDIT} />
-      <h1>Edit tour with id {id}</h1>
+      <Title type="h2" className="pb-[12px]">
+        Edit Tour
+      </Title>
       <TourForm id={id} />
     </div>
   );

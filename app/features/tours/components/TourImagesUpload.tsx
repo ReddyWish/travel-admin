@@ -17,6 +17,8 @@ import {
 } from '~/features/tours/constants/tourImagesParams';
 import type { TourImage } from '~/__generated__/types';
 import { Badge } from '~/shared/components/ui/badge';
+import type { ExtendedTourImage } from '~/features/tours/types/ExtendedTourImage';
+import { getImageUrl } from '~/features/tours/utils/getImageUrl';
 
 type TourImageUploadProps = {
   cover?: boolean;
@@ -32,6 +34,8 @@ export default function TourImagesUpload({
   const [error, setError] = useState<string>('');
 
   const { error: formError } = getFieldState('images');
+
+  const coverImage = images.find(({ isPrimary }) => isPrimary);
 
   const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -60,10 +64,7 @@ export default function TourImagesUpload({
     }
 
     try {
-      const newImages = files.map((file) => ({
-        url: URL.createObjectURL(file),
-        isPrimary: cover,
-      }));
+      const newImages = files.map((file) => ({ file, isPrimary: cover }));
 
       if (cover) {
         setValue('images', [newImages[0]], { shouldValidate: true });
@@ -116,7 +117,7 @@ export default function TourImagesUpload({
                 ) : (
                   <div className="relative lg:min-w-[332px] min-w-full h-[285px] lg:h-[364px]">
                     <img
-                      src={images[0].url}
+                      src={coverImage && getImageUrl(coverImage)}
                       alt="Tour cover"
                       className="w-full h-full object-cover rounded-md"
                     />
@@ -160,9 +161,9 @@ export default function TourImagesUpload({
                   {images.length > 0 && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                       {images.map((image, index) => (
-                        <div key={image.url} className="relative aspect-video">
+                        <div key={index} className="relative aspect-video">
                           <img
-                            src={image.url}
+                            src={getImageUrl(image)}
                             alt={`Tour image ${index + 1}`}
                             className="w-full h-full object-cover rounded-md"
                           />
