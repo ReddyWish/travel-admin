@@ -10,4 +10,15 @@ export const BREADCRUMBS_CONFIG = {
       { name: 'Edit Tour', link: '' },
     ],
   },
+  CATEGORIES: {
+    ROOT: [{ name: 'Categories', link: '/categories' }],
+    ADD: [
+      { name: 'Categories', link: '/categories' },
+      { name: 'Create Category', link: '' },
+    ],
+    EDIT: [
+      { name: 'Categories', link: '/categories' },
+      { name: 'Edit Category', link: '' },
+    ],
+  },
 };

@@ -24,7 +24,7 @@ export const categoriesTableColumns = ({
     header: '',
     cell: ({ row }) => {
       const goToEditReviewPage = () => {
-        navigate(`edit/${row.original.id}`);
+        navigate(`edit-category/${row.original.id}`);
       };
       return (
         <EditDeleteDropDown

@@ -26,7 +26,7 @@ import { useGetTourCategoriesQuery } from '~/features/tours/TourForm/__generated
 import { useParams } from 'react-router';
 import { Spinner } from '~/shared/components/Spinner';
 import type { ExtendedTourImage } from '~/features/tours/types/ExtendedTourImage';
-import { getImageUrl } from '~/features/tours/utils/getImageUrl';
+import { getTourImageUrl } from '~/features/tours/utils/getTourImageUrl';
 
 type StepSixProps = {
   isLoading: boolean;
@@ -72,7 +72,7 @@ export default function StepSix({ isLoading }: StepSixProps) {
         <div className="relative w-full rounded-xl overflow-hidden h-64 sm:h-72 md:h-80">
           <img
             className="w-full h-full object-cover"
-            src={getImageUrl(coverImage)}
+            src={getTourImageUrl(coverImage)}
             alt="Tour cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-6">
@@ -340,7 +340,7 @@ export default function StepSix({ isLoading }: StepSixProps) {
                 >
                   <img
                     className="h-full w-full object-cover"
-                    src={getImageUrl(image)}
+                    src={getTourImageUrl(image)}
                     alt={`Tour image ${index + 1}`}
                   />
                 </div>

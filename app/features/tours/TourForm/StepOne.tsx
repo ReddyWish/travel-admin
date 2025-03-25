@@ -14,7 +14,7 @@ import { Switch } from '~/shared/components/ui/switch';
 import { useFormContext } from 'react-hook-form';
 import type { Inputs } from '~/features/tours/types/FormInputs';
 import AccommodationFields from '~/features/tours/components/AccommodationFields';
-import TourImagesUpload from '~/features/tours/components/TourImagesUpload';
+import ImagesUpload from '~/features/tours/components/TourImagesUpload';
 
 export default function StepOne() {
   const { data, loading } = useGetCategoriesQuery();
@@ -33,7 +33,7 @@ export default function StepOne() {
   return (
     <div className="flex flex-col gap-7 max-w-none h-full">
       <div className="flex gap-7 flex-col lg:flex-row">
-        <TourImagesUpload cover={true} />
+        <ImagesUpload cover={true} />
 
         <div className="flex flex-col w-full gap-7">
           <FormField

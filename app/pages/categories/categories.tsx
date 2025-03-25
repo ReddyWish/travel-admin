@@ -14,7 +14,7 @@ export default function Categories() {
           className="mr-0 w-full sm:mr-4 sm:max-w-[376px]"
           placeholder="Search..."
         />
-        <AddButton link="add">Create Category</AddButton>
+        <AddButton link="add-category">Create Category</AddButton>
       </div>
       <CategoriesTable />
     </>

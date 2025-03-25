@@ -13,12 +13,11 @@ import { UploadIcon } from '~/shared/icons/UploadIcon';
 import {
   ACCEPTED_IMAGE_TYPES,
   MAX_FILE_SIZE,
-  MAX_IMAGES_LENGTH,
-} from '~/features/tours/constants/tourImagesParams';
+  MAX_TOUR_IMAGES_LENGTH,
+} from '~/shared/constants/imagesParams';
 import type { TourImage } from '~/__generated__/types';
 import { Badge } from '~/shared/components/ui/badge';
-import type { ExtendedTourImage } from '~/features/tours/types/ExtendedTourImage';
-import { getImageUrl } from '~/features/tours/utils/getImageUrl';
+import { getTourImageUrl } from '~/features/tours/utils/getTourImageUrl';
 
 type TourImageUploadProps = {
   cover?: boolean;
@@ -35,7 +34,8 @@ export default function TourImagesUpload({
 
   const { error: formError } = getFieldState('images');
 
-  const coverImage = images.find(({ isPrimary }) => isPrimary);
+  const coverImageIndex = images.findIndex(({ isPrimary }) => isPrimary);
+  const hasCoverImage = coverImageIndex !== -1;
 
   const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -44,8 +44,8 @@ export default function TourImagesUpload({
 
     if (!files.length) return;
 
-    if (!cover && images.length + files.length > MAX_IMAGES_LENGTH) {
-      setError(`Maximum ${MAX_IMAGES_LENGTH} images allowed`);
+    if (!cover && images.length + files.length > MAX_TOUR_IMAGES_LENGTH) {
+      setError(`Maximum ${MAX_TOUR_IMAGES_LENGTH} images allowed`);
       return;
     }
 
@@ -91,7 +91,7 @@ export default function TourImagesUpload({
           <FormControl>
             <div className="w-full space-y-4">
               {cover ? (
-                images.length === 0 ? (
+                !hasCoverImage || images.length === 0 ? (
                   <label
                     htmlFor="tourImage"
                     className={cn(
@@ -117,7 +117,7 @@ export default function TourImagesUpload({
                 ) : (
                   <div className="relative lg:min-w-[332px] min-w-full h-[285px] lg:h-[364px]">
                     <img
-                      src={coverImage && getImageUrl(coverImage)}
+                      src={getTourImageUrl(images[coverImageIndex])}
                       alt="Tour cover"
                       className="w-full h-full object-cover rounded-md"
                     />
@@ -150,11 +150,11 @@ export default function TourImagesUpload({
                       accept={ACCEPTED_IMAGE_TYPES.join(',')}
                       onChange={handleImageUpload}
                       multiple
-                      disabled={images.length >= MAX_IMAGES_LENGTH}
+                      disabled={images.length >= MAX_TOUR_IMAGES_LENGTH}
                     />
                     <p className="text-xs font-medium text-gray-400 mt-2">
                       PNG, JPG, SVG and WEBP are allowed (max 5MB) •{' '}
-                      {MAX_IMAGES_LENGTH - images.length} remaining
+                      {MAX_TOUR_IMAGES_LENGTH - images.length} remaining
                     </p>
                   </label>
 
@@ -163,7 +163,7 @@ export default function TourImagesUpload({
                       {images.map((image, index) => (
                         <div key={index} className="relative aspect-video">
                           <img
-                            src={getImageUrl(image)}
+                            src={getTourImageUrl(image)}
                             alt={`Tour image ${index + 1}`}
                             className="w-full h-full object-cover rounded-md"
                           />
