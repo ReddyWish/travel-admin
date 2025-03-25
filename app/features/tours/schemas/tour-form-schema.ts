@@ -6,7 +6,7 @@ const accommodationSchema = z.object({
     errorMap: () => ({ message: 'Invalid star rating' }),
   }),
   hotelName: z
-    .string()
+    .string({ required_error: 'Accommodation is required' })
     .min(2, 'Hotel name must be at least 2 characters')
     .max(30, 'Hotel name must not exceed 30 characters'),
 });

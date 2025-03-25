@@ -26,6 +26,7 @@ import { Input } from '~/shared/components/ui/input';
 import { Textarea } from '~/shared/components/ui/textarea';
 import { X } from 'lucide-react';
 import { getCategoryImageUrl } from '~/features/categories/utils/getCategoryImageUrl';
+import { Button } from '~/shared/components/ui/button';
 
 export default function CategoryForm({ id }: { id?: string }) {
   const [error, setError] = useState<string>('');
@@ -51,21 +52,21 @@ export default function CategoryForm({ id }: { id?: string }) {
     handleSubmit,
     reset,
     trigger,
-    clearErrors,
-    getValues,
     setValue,
     control,
     getFieldState,
+    getValues,
+    clearErrors,
+    setError: setFormError,
     watch,
+    formState: { isValid },
   } = methods;
-
-  console.log(getValues());
 
   const { error: formImageError } = getFieldState('image');
 
   const image = watch('image');
 
-  console.log(image);
+  console.log(getValues());
 
   const submitForm = handleSubmit((data) => {
     processForm(data);
@@ -96,7 +97,7 @@ export default function CategoryForm({ id }: { id?: string }) {
           description: `Category ${data.createCategory.name} successfully created.`,
         });
         reset();
-        navigate('/tours');
+        navigate('/categories');
       },
       onError: (error) => {
         console.log(error);
@@ -135,13 +136,17 @@ export default function CategoryForm({ id }: { id?: string }) {
     if (!file) return;
 
     if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
-      setError('File type not supported, please upload PNG, JPG, SVG or WEBP');
+      setFormError('image', {
+        message: 'File type not supported, please upload PNG, JPG, SVG or WEBP',
+      });
       e.target.value = '';
       return;
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      setError('File is too large. Maximum size is 5MB');
+      setFormError('image', {
+        message: 'File is too large. Maximum size is 5MB',
+      });
       e.target.value = '';
       return;
     }
@@ -182,7 +187,7 @@ export default function CategoryForm({ id }: { id?: string }) {
                 control={control}
                 name="image"
                 render={() => (
-                  <div className="flex-1">
+                  <div className="relative flex-1">
                     {image && (image.file || image.imageUrl) ? (
                       <div className="relative lg:min-w-[332px] min-w-full h-[285px] lg:h-[364px]">
                         <img
@@ -229,6 +234,7 @@ export default function CategoryForm({ id }: { id?: string }) {
                         </FormControl>
                       </FormItem>
                     )}
+                    <FormMessage className="absolute left-0 bottom-[-20px] " />
                   </div>
                 )}
               />
@@ -272,6 +278,21 @@ export default function CategoryForm({ id }: { id?: string }) {
                 />
               </div>
             </div>
+            <Button
+              type="submit"
+              disabled={
+                !isValid || createCategoryLoading || updateCategoryLoading
+              }
+              className="w-full mt-7"
+            >
+              {createCategoryLoading || updateCategoryLoading ? (
+                <Spinner />
+              ) : isEditMode ? (
+                'Update Category'
+              ) : (
+                'Create Category'
+              )}
+            </Button>
           </form>
         </FormProvider>
       )}
