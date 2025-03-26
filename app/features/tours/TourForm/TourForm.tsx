@@ -18,6 +18,8 @@ import { toast } from '~/hooks/use-toast';
 import { useGetTourQuery } from '~/features/tours/TourForm/__generated__/GetTour';
 import { useUpdateTourMutation } from '~/features/tours/TourForm/__generated__/UpdateTour';
 import { Spinner } from '~/shared/components/Spinner';
+import { useGetCategoriesQuery } from '~/features/tours/TourForm/__generated__/GetCategories';
+import type { Category } from '~/__generated__/types';
 
 export default function TourForm({ id }: { id?: string }) {
   const [currentStep, setCurrentStep] = useState(0);
@@ -26,12 +28,15 @@ export default function TourForm({ id }: { id?: string }) {
 
   const navigate = useNavigate();
 
-  const { data, loading } = useGetCurrenciesQuery();
+  const { data } = useGetCurrenciesQuery();
 
   const { data: tourData, loading: tourLoading } = useGetTourQuery({
     variables: { id: id || '' },
     skip: !isEditMode,
   });
+
+  const { data: categoriesData, loading: categoriesDataLoading } =
+    useGetCategoriesQuery();
 
   const tour = tourData?.tour;
 
@@ -163,7 +168,9 @@ export default function TourForm({ id }: { id?: string }) {
   const renderStep = () => {
     switch (currentStep) {
       case 0:
-        return <StepOne />;
+        return (
+          <StepOne categories={categoriesData?.categories as Category[]} />
+        );
       case 1:
         return <StepTwo />;
       case 2:
@@ -173,7 +180,12 @@ export default function TourForm({ id }: { id?: string }) {
       case 4:
         return <StepFive />;
       case 5:
-        return <StepSix isLoading={createTourLoading || updateTourLoading} />;
+        return (
+          <StepSix
+            isLoading={createTourLoading || updateTourLoading}
+            categories={categoriesData?.categories as Category[]}
+          />
+        );
       default:
         return null;
     }

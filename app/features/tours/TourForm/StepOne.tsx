@@ -15,17 +15,20 @@ import { useFormContext } from 'react-hook-form';
 import type { Inputs } from '~/features/tours/types/FormInputs';
 import AccommodationFields from '~/features/tours/components/AccommodationFields';
 import ImagesUpload from '~/features/tours/components/TourImagesUpload';
+import type { Category } from '~/__generated__/types';
 
-export default function StepOne() {
-  const { data, loading } = useGetCategoriesQuery();
+type StepOneProps = {
+  categories?: Category[];
+};
 
+export default function StepOne({ categories }: StepOneProps) {
   const {
     control,
     formState: { errors },
   } = useFormContext<Inputs>();
 
   const categoryOptions =
-    data?.categories.map((category) => ({
+    categories?.map((category) => ({
       label: category.name,
       value: category.id,
     })) || [];

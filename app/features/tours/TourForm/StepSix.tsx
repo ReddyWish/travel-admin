@@ -12,6 +12,7 @@ import {
   Check,
 } from 'lucide-react';
 import type {
+  Category,
   TourImageInput,
   TourProgramFragment,
 } from '~/__generated__/types';
@@ -30,23 +31,27 @@ import { getTourImageUrl } from '~/features/tours/utils/getTourImageUrl';
 
 type StepSixProps = {
   isLoading: boolean;
+  categories?: Category[];
 };
 
-export default function StepSix({ isLoading }: StepSixProps) {
+export default function StepSix({ isLoading, categories }: StepSixProps) {
   const { id } = useParams();
   const isEditMode = Boolean(id);
-  const { data: tourCategoriesData, loading: tourCategoriesDataLoading } =
-    useGetTourCategoriesQuery({
-      variables: { id: id || '' },
-      skip: !isEditMode || !id,
-    });
-  const { getValues } = useFormContext();
-  const formData = getValues();
   const {
+    getValues,
+    watch,
     formState: { isValid },
   } = useFormContext();
 
-  console.log(tourCategoriesData);
+  const formData = getValues();
+
+  const tourCategoryIds = getValues('categoryIds');
+
+  const tourCategories = categories?.filter((category) =>
+    tourCategoryIds.includes(category.id),
+  );
+
+  console.log(tourCategories);
 
   const getCurrencySymbol = (currencyId: string): string => {
     const currencies: Record<string, string> = {
@@ -114,7 +119,7 @@ export default function StepSix({ isLoading }: StepSixProps) {
                   <Tag size={14} /> Categories
                 </h4>
                 <div className="flex flex-wrap gap-2 mt-1">
-                  {tourCategoriesData?.tour?.categories.map(({ name, id }) => (
+                  {tourCategories?.map(({ name, id }) => (
                     <Badge
                       key={id}
                       className="px-2 py-1 text-xs text-black dark:text-white"

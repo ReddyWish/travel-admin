@@ -56,7 +56,6 @@ export default function CategoryForm({ id }: { id?: string }) {
     control,
     getFieldState,
     getValues,
-    clearErrors,
     setError: setFormError,
     watch,
     formState: { isValid },
