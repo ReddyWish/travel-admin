@@ -24,6 +24,8 @@ query GetTour($id: ID!) {
         }
         images {
             url
+            optimizedUrl
+            thumbnailUrl
             isPrimary
             id
         }

@@ -122,7 +122,7 @@ export function createTourFormSchema(availableCurrencyIds: string[]) {
           description: z
             .string()
             .min(3, 'Tour inclusion must be at least 3 characters')
-            .max(30, 'Tour inclusion must not exceed 30 characters'),
+            .max(300, 'Tour inclusion must not exceed 300 characters'),
         }),
       )
       .optional()
@@ -134,7 +134,7 @@ export function createTourFormSchema(availableCurrencyIds: string[]) {
           description: z
             .string()
             .min(3, 'Tour exclusion must be at least 3 characters')
-            .max(30, 'Tour exclusion must not exceed 30 characters'),
+            .max(300, 'Tour exclusion must not exceed 300 characters'),
         }),
       )
       .optional()

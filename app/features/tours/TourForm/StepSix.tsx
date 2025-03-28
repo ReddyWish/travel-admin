@@ -13,8 +13,8 @@ import {
 } from 'lucide-react';
 import type {
   Category,
-  TourImageInput,
-  TourProgramFragment,
+  TourImageCreateInput,
+  TourProgramCreateInput,
 } from '~/__generated__/types';
 import { HOTEL_RATINGS } from '~/features/tours/constants/hotelRatings';
 import type { AccommodationStars } from '~/features/tours/types/AccommodationStars';
@@ -62,11 +62,11 @@ export default function StepSix({ isLoading, categories }: StepSixProps) {
   };
 
   const coverImage = formData?.images.find(
-    (image: TourImageInput) => image.isPrimary,
+    (image: TourImageCreateInput) => image.isPrimary,
   );
 
   const mediaGallery = formData?.images.filter(
-    (image: TourImageInput) => image.isPrimary !== true,
+    (image: TourImageCreateInput) => image.isPrimary !== true,
   );
 
   return (
@@ -260,10 +260,12 @@ export default function StepSix({ isLoading, categories }: StepSixProps) {
                   {formData.program && formData.program.length > 0 ? (
                     formData.program
                       .sort(
-                        (a: TourProgramFragment, b: TourProgramFragment) =>
-                          a.order - b.order,
+                        (
+                          a: TourProgramCreateInput,
+                          b: TourProgramCreateInput,
+                        ) => a.order - b.order,
                       )
-                      .map((item: TourProgramFragment, index: number) => (
+                      .map((item: TourProgramCreateInput, index: number) => (
                         <div
                           key={index}
                           className="relative ml-1 pl-5 pb-3 border-l-2 border-slate-200 last:border-l-0 last:pb-0"
