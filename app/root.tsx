@@ -13,6 +13,7 @@ import type { Route } from './+types/root';
 import './app.css';
 import { client } from '~/lib/apollo';
 import { Toaster } from '~/shared/components/ui/toaster';
+import { AuthProvider } from '~/shared/providers/auth-provider';
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -50,7 +51,9 @@ export default function App() {
   return (
     <ApolloProvider client={client}>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        <Outlet />
+        <AuthProvider>
+          <Outlet />
+        </AuthProvider>
       </ThemeProvider>
     </ApolloProvider>
   );

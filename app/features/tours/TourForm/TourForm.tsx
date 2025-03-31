@@ -40,8 +40,6 @@ export default function TourForm({ id }: { id?: string }) {
 
   const tour = tourData?.tour;
 
-  console.log(tour);
-
   const [createTour, { loading: createTourLoading }] = useCreateTourMutation({
     onCompleted: (data) => {
       toast({
@@ -53,7 +51,6 @@ export default function TourForm({ id }: { id?: string }) {
       navigate('/tours');
     },
     onError: (error) => {
-      console.log(error);
       toast({
         title: 'Error',
         description: `Error while creating the tour`,
@@ -94,8 +91,6 @@ export default function TourForm({ id }: { id?: string }) {
   });
 
   const { handleSubmit, reset, trigger, clearErrors, getValues } = methods;
-
-  console.log(getValues());
 
   const submitForm = handleSubmit((data) => {
     processForm(data);
@@ -214,6 +209,8 @@ export default function TourForm({ id }: { id?: string }) {
         })),
         images: tour?.images.map((img) => ({
           url: img.url,
+          optimizedUrl: img.optimizedUrl,
+          thumbnailUrl: img.thumbnailUrl,
           isPrimary: img.isPrimary,
         })),
         inclusions: tour?.inclusions.map((item) => ({

@@ -107,6 +107,8 @@ export function createTourFormSchema(availableCurrencyIds: string[]) {
         z.object({
           id: z.string().optional(),
           url: z.string().optional(),
+          optimizedUrl: z.string().optional(),
+          thumbnailUrl: z.string().optional(),
           file: z.any().optional(),
           isPrimary: z.boolean().default(false),
         }),

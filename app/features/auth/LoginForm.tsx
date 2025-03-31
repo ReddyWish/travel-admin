@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { type SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { loginFormSchema } from '~/features/auth/schemas/loginFormSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { LoginCredentials } from '~/shared/types/LoginCredentials';
+import { useNavigate } from 'react-router';
 import { Title } from '~/shared/components/Title';
 import {
   Form,
@@ -18,10 +18,38 @@ import { Eye, EyeOff } from 'lucide-react';
 import { Checkbox } from '~/shared/components/ui/checkbox';
 import { Button } from '~/shared/components/ui/button';
 import travelImage from '~/assets/images/travelImage.jpg';
+import { useLoginMutation } from '~/features/auth/__generated__/Login';
+import { toast } from '~/hooks/use-toast';
+import { useAuth } from '~/shared/providers/auth-provider';
 
 export default function LoginForm() {
   const [rememberMe, setRememberMe] = useState(false);
   const [passwordIsVisible, setPasswordIsVisible] = useState(false);
+
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
+  const [loginMutation, { loading: logInLoading }] = useLoginMutation({
+    onCompleted: (data) => {
+      if (data.login.token) {
+        login(data.login.token);
+        toast({
+          title: 'Welcome! 🎉',
+          description: 'Login successfull',
+        });
+        navigate('/tours');
+      }
+    },
+    onError: () => {
+      toast({
+        title: 'Something went wrong 😞',
+        description: 'Error while logging in',
+        variant: 'destructive',
+      });
+    },
+  });
+
+  type Inputs = z.infer<typeof loginFormSchema>;
 
   const defaultValues = {
     email: '',
@@ -33,12 +61,14 @@ export default function LoginForm() {
     defaultValues,
   });
 
-  const onSubmit = (data: LoginCredentials) => {
-    console.log(data);
-  };
+  const { formState } = loginForm;
 
-  const handleRememberMeChange = () => {
-    setRememberMe(!rememberMe);
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    const res = await loginMutation({
+      variables: {
+        input: data,
+      },
+    });
   };
 
   const togglePasswordVisibility = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -57,7 +87,10 @@ export default function LoginForm() {
             Enter Login and Password to Sign In
           </span>
           <Form {...loginForm}>
-            <form onSubmit={loginForm.handleSubmit(onSubmit)}>
+            <form
+              onSubmit={loginForm.handleSubmit(onSubmit)}
+              className="flex flex-col gap-2"
+            >
               <FormField
                 control={loginForm.control}
                 name="email"
@@ -77,7 +110,7 @@ export default function LoginForm() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Пароль</FormLabel>
+                    <FormLabel>Password</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Input
@@ -102,21 +135,11 @@ export default function LoginForm() {
                 )}
               />
 
-              <div className="pt-8">
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="rememberMe"
-                    onCheckedChange={handleRememberMeChange}
-                  />
-                  <label
-                    htmlFor="rememberMe"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    Remember Me
-                  </label>
-                </div>
-              </div>
-              <Button type="submit" className="mt-4 w-full">
+              <Button
+                type="submit"
+                className="mt-4 w-full"
+                disabled={!formState.isValid || logInLoading}
+              >
                 Войти
               </Button>
             </form>

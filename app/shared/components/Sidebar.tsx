@@ -6,6 +6,7 @@ import { type RefObject, useRef } from 'react';
 import { Link, useLocation } from 'react-router';
 import { useOutsideClick } from '~/shared/hooks/useOutsideClick';
 import { ModeToggle } from '~/shared/components/mode-toggle';
+import { useAuth } from '~/shared/providers/auth-provider';
 
 interface SidebarProps {
   isMobile: boolean;
@@ -20,6 +21,7 @@ export default function Sidebar({
   sideBarIsOpen,
   setSideBarIsOpen,
 }: SidebarProps) {
+  const { logout } = useAuth();
   const sidebarRef: RefObject<HTMLDivElement | null> = useRef(null);
   const buttonRef: RefObject<HTMLButtonElement | null> = useRef(null);
   const toggleSideBar = () => {
@@ -95,7 +97,7 @@ export default function Sidebar({
           <div className="flex items-center justify-between">
             <Button
               className="max-w-[101px] flex gap-1 cursor-pointer dark:text-white dark:border-1 dark:border-white"
-              onClick={() => console.log('Logout')}
+              onClick={logout}
             >
               <ArrowRight className="w-4 h-4" />
               Logout

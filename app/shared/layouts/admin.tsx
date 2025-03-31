@@ -1,4 +1,5 @@
 import { ROUTES } from '~/shared/constants/routes';
+import { Navigate } from 'react-router';
 import { ChartColumnStacked, Euro, TreePalm } from 'lucide-react';
 import type { NavigationList } from '~/shared/types/NavigationList';
 import { Outlet } from 'react-router';
@@ -7,6 +8,7 @@ import Sidebar from '~/shared/components/Sidebar';
 import { useEffect, useState } from 'react';
 import { WindowSize } from '~/shared/types/WindowSize';
 import { useIsLessThanSize } from '~/shared/hooks/useIsLessThanSize';
+import { useAuth } from '~/shared/providers/auth-provider';
 
 const NAVIGATION_LIST: NavigationList = [
   {
@@ -27,6 +29,8 @@ const NAVIGATION_LIST: NavigationList = [
 ];
 
 export default function Admin() {
+  const { isAuthenticated } = useAuth();
+  if (!isAuthenticated) return <Navigate to="/" replace />;
   const isMobile = useIsLessThanSize(WindowSize.sm);
   const [sideBarIsOpen, setSideBarIsOpen] = useState(false);
 

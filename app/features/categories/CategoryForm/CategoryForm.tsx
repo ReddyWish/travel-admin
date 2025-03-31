@@ -42,8 +42,6 @@ export default function CategoryForm({ id }: { id?: string }) {
 
   const category = categoryData?.category;
 
-  console.log(category);
-
   type Inputs = z.infer<typeof tourCategorySchema>;
 
   const methods = useForm<Inputs>({
@@ -66,8 +64,6 @@ export default function CategoryForm({ id }: { id?: string }) {
   const { error: formImageError } = getFieldState('image');
 
   const image = watch('image');
-
-  // console.log(getCategoryImageUrl(image));
 
   const submitForm = handleSubmit((data) => {
     processForm(data);

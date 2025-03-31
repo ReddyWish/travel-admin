@@ -6,7 +6,6 @@ import { Title } from '~/shared/components/Title';
 
 export default function EditTour() {
   const { id } = useParams();
-  console.log(id);
   return (
     <div>
       <CustomBreadCrumbs paths={BREADCRUMBS_CONFIG.TOURS.EDIT} />

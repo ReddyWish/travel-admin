@@ -51,8 +51,6 @@ export default function StepSix({ isLoading, categories }: StepSixProps) {
     tourCategoryIds.includes(category.id),
   );
 
-  console.log(tourCategories);
-
   const getCurrencySymbol = (currencyId: string): string => {
     const currencies: Record<string, string> = {
       '1': '$',
