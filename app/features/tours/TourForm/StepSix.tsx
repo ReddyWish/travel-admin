@@ -28,6 +28,7 @@ import { useParams } from 'react-router';
 import { Spinner } from '~/shared/components/Spinner';
 import type { ExtendedTourImage } from '~/features/tours/types/ExtendedTourImage';
 import { getTourImageUrl } from '~/features/tours/utils/getTourImageUrl';
+import { useGetCurrenciesQuery } from '~/features/currencies/CurrenciesTable/__generated__/GetCurrencies';
 
 type StepSixProps = {
   isLoading: boolean;
@@ -47,16 +48,17 @@ export default function StepSix({ isLoading, categories }: StepSixProps) {
 
   const tourCategoryIds = getValues('categoryIds');
 
+  const { data: currenciesData } = useGetCurrenciesQuery();
+
   const tourCategories = categories?.filter((category) =>
     tourCategoryIds.includes(category.id),
   );
 
   const getCurrencySymbol = (currencyId: string): string => {
-    const currencies: Record<string, string> = {
-      '1': '$',
-      '2': '€',
-    };
-    return currencies[currencyId] || '';
+    const currency = currenciesData?.currencies.find(
+      (currency) => currency.id === currencyId,
+    );
+    return currency?.code === 'USD' ? '$' : '€';
   };
 
   const coverImage = formData?.images.find(

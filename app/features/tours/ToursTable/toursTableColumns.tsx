@@ -4,10 +4,27 @@ import type { NavigateFunction } from 'react-router';
 import { EditDeleteDropDown } from '~/shared/components/EditDeleteDropDown';
 import type { DeleteTourMutationFn } from '~/features/tours/ToursTable/__generated__/DeleteTour';
 import type { GetToursQuery } from '~/features/tours/ToursTable/__generated__/GetTours';
+import { ChevronsUpDown } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '~/shared/components/ui/dropdown-menu';
+import type { Currency } from '~/__generated__/types';
+import type {
+  GetCurrenciesQuery,
+  GetCurrenciesQueryHookResult,
+} from '~/features/tours/ToursTable/__generated__/GetCurrencies';
 
 interface ToursTableColumnsProps {
   navigate: NavigateFunction;
   deleteTour: DeleteTourMutationFn;
+  currenciesData?: GetCurrenciesQuery;
+  selectedCurrency: string;
+  setSelectedCurrency: (currencyCode: string) => void;
 }
 
 export type TourFragment = GetToursQuery['tours'][0];
@@ -15,6 +32,9 @@ export type TourFragment = GetToursQuery['tours'][0];
 export const toursTableColumns = ({
   navigate,
   deleteTour,
+  currenciesData,
+  selectedCurrency,
+  setSelectedCurrency,
 }: ToursTableColumnsProps): ColumnDef<TourFragment>[] => [
   {
     accessorKey: 'title',
@@ -45,15 +65,39 @@ export const toursTableColumns = ({
   },
   {
     accessorKey: 'price',
-    header: 'Price',
+    header: () => {
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger className="flex items-center justify-center space-x-1 focus:outline-none">
+            Price
+            <ChevronsUpDown className="w-4 h-4" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="bg-white">
+            {currenciesData?.currencies.map(({ code, id }) => (
+              <DropdownMenuItem
+                key={id}
+                className="hover:bg-gray-50 cursor-pointer flex items-center justify-center space-x-2"
+                onClick={() => setSelectedCurrency(code)}
+              >
+                {code}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
     cell: ({ row }) => {
-      const minPrice = row.original.price.reduce((min, price) => {
-        return price.amount < min.amount ? price : min;
-      }, row.original.price[0]);
-      if (!minPrice) {
+      const priceWithCurrency = row.original.price.find(
+        (price) => price.currency.code === selectedCurrency,
+      );
+
+      if (!priceWithCurrency && row.original.price.length === 0) {
         return 'No price available';
       }
-      return `${minPrice.amount} ${minPrice.currency.code}`;
+
+      const displayPrice = priceWithCurrency || row.original.price[0];
+
+      return `${displayPrice.amount} ${displayPrice.currency.code}`;
     },
   },
   {

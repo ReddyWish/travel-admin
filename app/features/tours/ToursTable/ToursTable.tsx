@@ -9,11 +9,15 @@ import {
 import { useDeleteTourMutation } from '~/features/tours/ToursTable/__generated__/DeleteTour';
 import CustomTable from '~/shared/components/CustomTable';
 import { useToast } from '~/hooks/use-toast';
+import { useGetCurrenciesQuery } from '~/features/currencies/CurrenciesTable/__generated__/GetCurrencies';
+import { useState } from 'react';
 
 export default function ToursTable() {
+  const [selectedCurrency, setSelectedCurrency] = useState('USD');
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { data, loading, error } = useGetToursQuery();
+  const { data: toursData, loading: toursDataLoading } = useGetToursQuery();
+  const { data: currenciesData } = useGetCurrenciesQuery();
   const [deleteTour, { loading: deleteTourLoading }] = useDeleteTourMutation({
     onCompleted: (data) => {
       toast({
@@ -26,15 +30,18 @@ export default function ToursTable() {
   const columns = toursTableColumns({
     navigate,
     deleteTour,
+    currenciesData,
+    selectedCurrency,
+    setSelectedCurrency,
   });
 
   const table = useReactTable({
-    data: data?.tours ?? [],
+    data: toursData?.tours ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
 
-  return loading ? (
+  return toursDataLoading ? (
     <div className="flex items-center justify-center min-h-[150px]">
       <Spinner />
     </div>

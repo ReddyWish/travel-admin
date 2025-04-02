@@ -97,7 +97,6 @@ export default function CategoryForm({ id }: { id?: string }) {
         navigate('/categories');
       },
       onError: (error) => {
-        console.log(error);
         toast({
           title: 'Error',
           description: `Error while creating the category`,
@@ -116,7 +115,6 @@ export default function CategoryForm({ id }: { id?: string }) {
         navigate('/categories');
       },
       onError: (error) => {
-        console.log(error);
         toast({
           title: 'Error',
           description: `Error while updating the category`,
