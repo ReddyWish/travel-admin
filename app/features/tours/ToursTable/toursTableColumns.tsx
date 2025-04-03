@@ -9,15 +9,9 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '~/shared/components/ui/dropdown-menu';
-import type { Currency } from '~/__generated__/types';
-import type {
-  GetCurrenciesQuery,
-  GetCurrenciesQueryHookResult,
-} from '~/features/tours/ToursTable/__generated__/GetCurrencies';
+import type { GetCurrenciesQuery } from '~/features/tours/ToursTable/__generated__/GetCurrencies';
 
 interface ToursTableColumnsProps {
   navigate: NavigateFunction;

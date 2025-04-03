@@ -4,7 +4,6 @@ import {
   Hotel,
   Info,
   MapPin,
-  Star,
   Tag,
   Route,
   HandCoins,
