@@ -51,7 +51,10 @@ const hotelRatingOptions: RatingOption[] = [
 
 export default function AccommodationFields() {
   const { control, setValue, watch } = useFormContext<Inputs>();
+  const accommodations = watch('accommodations');
   const currentRating = watch('accommodations.0.stars');
+  const hotelName = watch('accommodations.0.hotelName');
+  console.log(accommodations);
 
   const handleRatingChange = (value: AccommodationStars) => {
     setValue('accommodations.0.stars', value, { shouldValidate: true });
@@ -85,7 +88,10 @@ export default function AccommodationFields() {
             <FormLabel>Rating</FormLabel>
             <FormControl>
               <DropdownMenu>
-                <DropdownMenuTrigger className="flex justify-center items-center border border-slate-200 text-slate-400 rounded-md text-sm shadow-sm h-9 w-full outline-none">
+                <DropdownMenuTrigger
+                  className="flex justify-center items-center border border-slate-200 text-slate-400 rounded-md text-sm shadow-sm h-9 w-full outline-none cursor-no-drop"
+                  disabled={!hotelName || hotelName.trim() === ''}
+                >
                   {selectedOption ? selectedOption.label : 'Select rating'}
                 </DropdownMenuTrigger>
                 <DropdownMenuContent

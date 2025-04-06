@@ -19,7 +19,11 @@ import { useGetTourQuery } from '~/features/tours/TourForm/__generated__/GetTour
 import { useUpdateTourMutation } from '~/features/tours/TourForm/__generated__/UpdateTour';
 import { Spinner } from '~/shared/components/Spinner';
 import { useGetCategoriesQuery } from '~/features/tours/TourForm/__generated__/GetCategories';
-import type { Category } from '~/__generated__/types';
+import {
+  AccommodationStars,
+  type Category,
+  type TourAccommodationCreateInput,
+} from '~/__generated__/types';
 
 export default function TourForm({ id }: { id?: string }) {
   const [currentStep, setCurrentStep] = useState(0);
@@ -92,6 +96,8 @@ export default function TourForm({ id }: { id?: string }) {
 
   const { handleSubmit, reset, trigger, clearErrors, getValues } = methods;
 
+  console.log(getValues());
+
   const submitForm = handleSubmit((data) => {
     processForm(data);
   });
@@ -101,13 +107,41 @@ export default function TourForm({ id }: { id?: string }) {
       await updateTour({
         variables: {
           id,
-          input: data,
+          input: {
+            ...data,
+            accommodations:
+              data?.accommodations[0]?.hotelName === undefined ||
+              data?.accommodations[0]?.hotelName === ''
+                ? undefined
+                : data.accommodations.filter(
+                    (
+                      acc,
+                    ): acc is {
+                      hotelName: string;
+                      stars?: AccommodationStars;
+                    } => acc.hotelName !== undefined && acc.hotelName !== '',
+                  ),
+          },
         },
       });
     } else {
       await createTour({
         variables: {
-          input: data,
+          input: {
+            ...data,
+            accommodations:
+              data?.accommodations[0]?.hotelName === undefined ||
+              data?.accommodations[0]?.hotelName === ''
+                ? undefined
+                : data.accommodations.filter(
+                    (
+                      acc,
+                    ): acc is {
+                      hotelName: string;
+                      stars?: AccommodationStars;
+                    } => acc.hotelName !== undefined && acc.hotelName !== '',
+                  ),
+          },
         },
       });
     }
@@ -219,9 +253,9 @@ export default function TourForm({ id }: { id?: string }) {
         exclusions: tour?.exclusions.map((item) => ({
           description: item.description,
         })),
-        accommodations: tour?.accommodations.map((acc) => ({
+        accommodations: tour?.accommodations?.map((acc) => ({
           hotelName: acc.hotelName,
-          stars: acc.stars,
+          stars: acc.stars as AccommodationStars,
         })),
       });
     }
