@@ -238,7 +238,7 @@ export default function TourForm({ id }: { id?: string }) {
         program: tour?.program.map((p) => ({
           order: p.order,
           title: p.title,
-          description: p.description,
+          description: p.description || '',
           startTime: p.startTime || '',
         })),
         images: tour?.images.map((img) => ({

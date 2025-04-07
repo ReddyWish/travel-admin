@@ -98,11 +98,11 @@ export function createTourFormSchema(availableCurrencyIds: string[]) {
           title: z
             .string()
             .min(3, 'Title must be at least 3 characters')
-            .max(100, 'Title must not exceed 3 characters'),
+            .max(200, 'Title must not exceed 200 characters'),
           description: z
             .string()
-            .min(10, 'Description must be at least 10 characters')
-            .max(1000, 'Description must not exceed 50 characters'),
+            .max(1000, 'Description must not exceed 50 characters')
+            .optional(),
         }),
       )
       .optional()

@@ -37,13 +37,17 @@ export const toursTableColumns = ({
   {
     accessorKey: 'location',
     header: 'Location',
+    cell: ({ row }) => {
+      const location = row.original.location;
+      return location ? `${location}` : '—';
+    },
   },
   {
     accessorKey: 'accommodations',
     header: 'Accommodation',
     cell: ({ row }) => {
-      const accommodation = row.original.accommodations[0];
-      return accommodation ? `${accommodation.hotelName}` : 'No accommodation';
+      const accommodation = row.original.accommodations?.[0];
+      return accommodation ? `${accommodation.hotelName}` : '—';
     },
   },
   {

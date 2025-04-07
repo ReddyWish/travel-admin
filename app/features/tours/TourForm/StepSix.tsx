@@ -22,7 +22,6 @@ import { Card, CardContent } from '~/shared/components/ui/card';
 import { Separator } from '~/shared/components/ui/separator';
 import { Button } from '~/shared/components/ui/button';
 import Rating from '~/shared/components/Rating';
-import { useGetTourCategoriesQuery } from '~/features/tours/TourForm/__generated__/GetTourCategories';
 import { useParams } from 'react-router';
 import { Spinner } from '~/shared/components/Spinner';
 import type { ExtendedTourImage } from '~/features/tours/types/ExtendedTourImage';
@@ -137,22 +136,28 @@ export default function StepSix({ isLoading, categories }: StepSixProps) {
                 <h4 className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1.5 mb-1">
                   <Hotel size={14} /> Accommodation
                 </h4>
-                <div className="flex items-center">
-                  <p className="font-medium text-black dark:text-white">
-                    {formData.accommodations[0]?.hotelName}
-                  </p>
-                  <div className="ml-2 flex items-center">
-                    <Rating
-                      rating={
-                        HOTEL_RATINGS[
-                          formData.accommodations[0]
-                            ?.stars as AccommodationStars
-                        ]
-                      }
-                      className="w-20 text-yellow-400 fill-yellow-400"
-                    />
+                {formData.accommodations?.[0]?.hotelName ? (
+                  <div className="flex items-center">
+                    <p className="font-medium text-black dark:text-white">
+                      {formData.accommodations[0].hotelName}
+                    </p>
+                    <div className="ml-2 flex items-center">
+                      <Rating
+                        rating={
+                          HOTEL_RATINGS[
+                            formData.accommodations[0]
+                              ?.stars as AccommodationStars
+                          ]
+                        }
+                        className="w-20 text-yellow-400 fill-yellow-400"
+                      />
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <span className="text-gray-400">
+                    Accommodation not specified
+                  </span>
+                )}
               </div>
 
               <div>
