@@ -91,12 +91,21 @@ export default function TourForm({ id }: { id?: string }) {
     defaultValues: {
       categoryIds: [],
       price: [],
+      title: '',
+      shortDescription: '',
+      description: '',
+      location: '',
+      isBestSeller: false,
+      durationDays: 0,
+      program: [],
+      images: [],
+      inclusions: [],
+      exclusions: [],
+      accommodations: [{ hotelName: '', stars: undefined }],
     },
   });
 
   const { handleSubmit, reset, trigger, clearErrors, getValues } = methods;
-
-  console.log(getValues());
 
   const submitForm = handleSubmit((data) => {
     processForm(data);

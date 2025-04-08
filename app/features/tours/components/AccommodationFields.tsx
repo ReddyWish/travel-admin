@@ -1,6 +1,5 @@
 import { useFormContext } from 'react-hook-form';
 import type { Inputs } from '~/features/tours/types/FormInputs';
-import { useEffect } from 'react';
 import {
   FormControl,
   FormField,
@@ -54,7 +53,6 @@ export default function AccommodationFields() {
   const accommodations = watch('accommodations');
   const currentRating = watch('accommodations.0.stars');
   const hotelName = watch('accommodations.0.hotelName');
-  console.log(accommodations);
 
   const handleRatingChange = (value: AccommodationStars) => {
     setValue('accommodations.0.stars', value, { shouldValidate: true });

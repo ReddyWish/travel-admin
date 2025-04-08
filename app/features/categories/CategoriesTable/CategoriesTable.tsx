@@ -13,7 +13,7 @@ import { useToast } from '~/hooks/use-toast';
 export default function CategoriesTable() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { data, loading, error } = useGetCategoriesQuery();
+  const { data, loading } = useGetCategoriesQuery();
   const [deleteCategory, { loading: deleteCategoryLoading }] =
     useDeleteCategoryMutation({
       onCompleted: (data) => {
