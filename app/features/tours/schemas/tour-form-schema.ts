@@ -6,6 +6,7 @@ const accommodationSchema = z.object({
     .nativeEnum(AccommodationStars, {
       errorMap: () => ({ message: 'Invalid star rating' }),
     })
+    .nullable()
     .optional(),
   hotelName: z
     .string()
