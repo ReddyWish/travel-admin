@@ -95,7 +95,7 @@ export default function TourImagesUpload({
                   <label
                     htmlFor="tourImage"
                     className={cn(
-                      'bg-white dark:bg-gray-300 font-semibold rounded-md lg:min-w-[332px] min-w-full min-h-[285px] lg:min-h-[364px]',
+                      'bg-white dark:bg-gray-300 font-semibold rounded-md lg:min-w-[332px] min-w-full min-h-[285px] lg:min-h-[450px]',
                       'flex flex-col items-center justify-center cursor-pointer h-',
                       'border border-slate-200 shadow-md lg:p-3 p-5 relative',
                       (error || formError) && 'border-red-500',
@@ -115,7 +115,7 @@ export default function TourImagesUpload({
                     </p>
                   </label>
                 ) : (
-                  <div className="relative lg:min-w-[332px] min-w-full h-[285px] lg:h-[364px]">
+                  <div className="relative lg:min-w-[332px] min-w-full h-[285px] lg:h-[450px]">
                     <img
                       src={getTourImageUrl(images[coverImageIndex])}
                       alt="Tour cover"

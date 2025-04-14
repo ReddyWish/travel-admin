@@ -6,6 +6,7 @@ import {
   MapPin,
   Tag,
   Route,
+  Box,
   HandCoins,
   ListCollapse,
   Check,
@@ -13,6 +14,7 @@ import {
 import type {
   Category,
   TourImageCreateInput,
+  TourPackagePrice,
   TourProgramCreateInput,
 } from '~/__generated__/types';
 import { HOTEL_RATINGS } from '~/features/tours/constants/hotelRatings';
@@ -27,6 +29,7 @@ import { Spinner } from '~/shared/components/Spinner';
 import type { ExtendedTourImage } from '~/features/tours/types/ExtendedTourImage';
 import { getTourImageUrl } from '~/features/tours/utils/getTourImageUrl';
 import { useGetCurrenciesQuery } from '~/features/currencies/CurrenciesTable/__generated__/GetCurrencies';
+import type { Inputs } from '~/features/tours/types/FormInputs';
 
 type StepSixProps = {
   isLoading: boolean;
@@ -43,6 +46,8 @@ export default function StepSix({ isLoading, categories }: StepSixProps) {
   } = useFormContext();
 
   const formData = getValues();
+
+  console.log(formData);
 
   const tourCategoryIds = getValues('categoryIds');
 
@@ -66,6 +71,8 @@ export default function StepSix({ isLoading, categories }: StepSixProps) {
   const mediaGallery = formData?.images.filter(
     (image: TourImageCreateInput) => image.isPrimary !== true,
   );
+
+  console.log(formData.tourPackages[0].prices);
 
   return (
     <div
@@ -162,31 +169,58 @@ export default function StepSix({ isLoading, categories }: StepSixProps) {
 
               <div>
                 <h4 className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1.5 mb-2">
-                  <HandCoins size={16} /> Prices
+                  <Box size={16} /> Packages
                 </h4>
-                <div className="grid lg:grid-cols-2 gap-2 mt-1 grid-cols-1 text-black dark:text-white">
-                  {formData.price?.map(
+                <div className="flex flex-col gap-2 mt-1 text-black dark:text-white">
+                  {formData.tourPackages?.map(
                     (
                       {
-                        amount,
+                        peopleCount,
                         comment,
-                        currencyId,
+                        prices,
                       }: {
-                        amount: number;
+                        peopleCount: number;
                         comment: string;
-                        currencyId: string;
+                        prices: Array<TourPackagePrice>;
                       },
                       index: number,
                     ) => (
-                      <Badge key={index} className="px-2 py-1 text-xs">
-                        {getCurrencySymbol(currencyId)} {amount}{' '}
-                        {comment && comment}
-                      </Badge>
+                      <div className="border border-slate-200 rounded-md p-2">
+                        <h4 className="text-sm flex items-center gap-1.5 mb-1.5">
+                          <span className="text-gray-500 dark:text-gray-400">
+                            Description:{' '}
+                          </span>
+                          {comment}
+                        </h4>
+                        <h4 className="text-sm flex items-center gap-1.5 mb-1.5">
+                          <span className="text-gray-500 dark:text-gray-400">
+                            People capacity:{' '}
+                          </span>
+                          {peopleCount}
+                        </h4>
+
+                        <div className="flex gap-1.5">
+                          <h4 className="text-sm flex items-center gap-1.5">
+                            <span className="text-gray-500 dark:text-gray-400">
+                              Prices:{' '}
+                            </span>
+                          </h4>
+                          <div className="grid lg:grid-cols-2 gap-2 mt-1 grid-cols-1">
+                            {prices.map(({ currencyId, amount }, index) => (
+                              <Badge
+                                key={index}
+                                className="font-semibold py-1 text-xs"
+                              >
+                                {getCurrencySymbol(currencyId)}
+                                {amount}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
                     ),
                   ) || (
-                    <span className="text-gray-400">
-                      No categories specified
-                    </span>
+                    <span className="text-gray-400">No prices specified</span>
                   )}
                 </div>
               </div>

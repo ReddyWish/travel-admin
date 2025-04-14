@@ -5,6 +5,7 @@ query GetTour($id: ID!) {
         location
         description
         durationDays
+        peopleCount
         shortDescription
         program {
             title
@@ -13,10 +14,13 @@ query GetTour($id: ID!) {
             description
             id
         }
-        price {
+        tourPackages {
+            peopleCount
             comment
-            amount
-            currencyId
+            prices {
+                amount
+                currencyId
+            }
         }
         isBestSeller
         inclusions {

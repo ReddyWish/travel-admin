@@ -19,11 +19,7 @@ import { useGetTourQuery } from '~/features/tours/TourForm/__generated__/GetTour
 import { useUpdateTourMutation } from '~/features/tours/TourForm/__generated__/UpdateTour';
 import { Spinner } from '~/shared/components/Spinner';
 import { useGetCategoriesQuery } from '~/features/tours/TourForm/__generated__/GetCategories';
-import {
-  AccommodationStars,
-  type Category,
-  type TourAccommodationCreateInput,
-} from '~/__generated__/types';
+import { AccommodationStars, type Category } from '~/__generated__/types';
 
 export default function TourForm({ id }: { id?: string }) {
   const [currentStep, setCurrentStep] = useState(0);
@@ -90,16 +86,17 @@ export default function TourForm({ id }: { id?: string }) {
     resolver: zodResolver(tourFormSchema),
     defaultValues: {
       categoryIds: [],
-      price: [],
       title: '',
       shortDescription: '',
       description: '',
       location: '',
       isBestSeller: false,
-      durationDays: 0,
+      durationDays: undefined,
+      peopleCount: undefined,
       program: [],
       images: [],
       inclusions: [],
+      tourPackages: [],
       exclusions: [],
       accommodations: [{ hotelName: '', stars: undefined }],
     },
@@ -239,10 +236,11 @@ export default function TourForm({ id }: { id?: string }) {
         isBestSeller: tour?.isBestSeller,
         categoryIds: tour.categories.map((cat) => cat.id),
         durationDays: tour?.durationDays,
-        price: tour?.price.map((p) => ({
-          currencyId: p.currencyId,
-          amount: p.amount,
-          comment: p.comment || '',
+        peopleCount: tour?.peopleCount,
+        tourPackages: tour?.tourPackages.map((pkg) => ({
+          peopleCount: pkg.peopleCount,
+          comment: pkg.comment || '',
+          prices: pkg.prices,
         })),
         program: tour?.program.map((p) => ({
           order: p.order,

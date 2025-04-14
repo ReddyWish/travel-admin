@@ -103,6 +103,33 @@ export default function StepOne({ categories }: StepOneProps) {
 
           <FormField
             control={control}
+            name="peopleCount"
+            render={({ field }) => (
+              <FormItem className="relative grid w-full items-center">
+                <FormLabel htmlFor="peopleCount">
+                  Maximum People Number
+                </FormLabel>
+                <FormControl className="m-0">
+                  <Input
+                    type="number"
+                    id="peopleCount"
+                    placeholder="Enter maximum people number"
+                    className="margin-0"
+                    {...field}
+                    onChange={(e) => {
+                      const value =
+                        e.target.value === '' ? '' : Number(e.target.value);
+                      field.onChange(value);
+                    }}
+                  />
+                </FormControl>
+                <FormMessage className="absolute bottom-[-20px]" />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={control}
             name="shortDescription"
             render={({ field }) => (
               <FormItem className="relative grid w-full">

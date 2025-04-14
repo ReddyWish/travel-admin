@@ -1,6 +1,6 @@
 import { Input } from '~/shared/components/ui/input';
 import { Textarea } from '~/shared/components/ui/textarea';
-import { X, Plus } from 'lucide-react';
+import { X, Plus, Loader } from 'lucide-react';
 import { Button } from '~/shared/components/ui/button';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import type { Inputs } from '~/features/tours/types/FormInputs';
@@ -12,203 +12,222 @@ import {
   FormMessage,
 } from '~/shared/components/ui/form';
 import { useGetCurrenciesQuery } from '~/features/currencies/CurrenciesTable/__generated__/GetCurrencies';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+
+interface PeopleCountErrors {
+  [key: number]: string;
+}
 
 export default function StepTwo() {
+  const [peopleCountErrors, setPeopleCountErrors] = useState<PeopleCountErrors>(
+    {},
+  );
   const { data, loading } = useGetCurrenciesQuery();
   const {
     control,
     watch,
     setValue,
+    getValues,
+    trigger,
     formState: { errors },
   } = useFormContext<Inputs>();
   const { fields, append, remove } = useFieldArray({
     control,
-    name: 'price',
+    name: 'tourPackages',
   });
 
-  const createPriceGroup = () => {
+  console.log(getValues('peopleCount'));
+
+  const totalCapacity = watch('peopleCount');
+
+  useEffect(() => {
+    if (totalCapacity && fields.length > 0) {
+      validateAllPackages();
+    }
+  }, [totalCapacity]);
+
+  const validatePackagePeopleCount = (packageIndex: number, value: number) => {
+    const tourCapacity = getValues('peopleCount');
+
+    const newErrors = { ...peopleCountErrors };
+
+    if (value > tourCapacity) {
+      newErrors[packageIndex] =
+        `People number cannot exceed tour capacity (${tourCapacity})`;
+    } else {
+      delete newErrors[packageIndex];
+    }
+
+    setPeopleCountErrors(newErrors);
+    return value <= tourCapacity;
+  };
+
+  const validateAllPackages = () => {
+    const tourCapacity = getValues('peopleCount');
+    const newErrors = {} as PeopleCountErrors;
+
+    fields.forEach((field, index) => {
+      const packagePeopleCount = getValues(`tourPackages.${index}.peopleCount`);
+      if (packagePeopleCount > tourCapacity) {
+        newErrors[index] =
+          `People number cannot exceed tour capacity (${tourCapacity})`;
+      }
+    });
+
+    setPeopleCountErrors(newErrors);
+  };
+
+  const createTourPackage = () => {
     if (!data?.currencies?.length) return [];
 
-    return data.currencies.map((currency) => ({
+    const prices = data.currencies.map((currency) => ({
       currencyId: currency.id,
       amount: 0,
-      comment: '',
     }));
+
+    return {
+      peopleCount: 0,
+      comment: '',
+      prices,
+    };
   };
 
-  const handleAddPriceGroup = () => {
+  const handleAddTourPackage = () => {
     if (fields.length < 10) {
-      append(createPriceGroup());
+      append(createTourPackage());
     }
-    return;
   };
-
-  const handleRemovePriceGroup = (groupIndex: number) => {
-    const currencyCount = data?.currencies?.length || 0;
-    const startIndex = groupIndex * currencyCount;
-    remove(Array.from({ length: currencyCount }, (_, i) => startIndex + i));
-  };
-
-  const handleCommentChange = (groupIndex: number, newComment: string) => {
-    const currencyCount = data?.currencies?.length || 0;
-    const startIndex = groupIndex * currencyCount;
-
-    Array.from({ length: currencyCount }).forEach((_, i) => {
-      setValue(`price.${startIndex + i}.comment`, newComment);
-    });
-  };
-
-  const priceGroups = data?.currencies?.length
-    ? fields.length / data.currencies.length
-    : 0;
 
   useEffect(() => {
     if (
       fields.length === 0 &&
       data?.currencies?.length &&
-      watch('price')?.length === 0
+      (!watch('tourPackages') || watch('tourPackages')?.length === 0)
     ) {
-      append(createPriceGroup());
+      append(createTourPackage());
     }
-  }, [data?.currencies, fields.length, append]);
+  }, [data?.currencies, fields.length, append, watch]);
+
+  if (!data?.currencies?.length) {
+    return <Loader />;
+  }
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="border border-slate-200 rounded-md shadow-sm p-5 relative">
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col md:flex-row gap-5">
-            {data?.currencies.map((currency, currencyIndex) => (
-              <FormField
-                key={currency.id}
-                control={control}
-                name={`price.${currencyIndex}.amount`}
-                render={({ field }) => (
-                  <FormItem className="relative flex-1">
-                    <FormLabel>{currency.code}</FormLabel>
-                    <FormControl className="m-0">
-                      <Input
-                        type="number"
-                        placeholder={`Price in ${currency.code}`}
-                        {...field}
-                        onChange={(e) => {
-                          field.onChange(Number(e.target.value));
-                          setValue(
-                            `price.${currencyIndex}.currencyId`,
-                            currency.id,
-                          );
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage className="absolute bottom-[-20px]" />
-                  </FormItem>
-                )}
-              />
-            ))}
-          </div>
-
-          <FormField
-            control={control}
-            name="price.0.comment"
-            render={({ field }) => (
-              <FormItem className="relative flex-1">
-                <FormLabel>Comment</FormLabel>
-                <FormControl className="m-0">
-                  <Textarea
-                    placeholder="Describe the price"
-                    className="resize-none h-21"
-                    {...field}
-                    onChange={(e) => handleCommentChange(0, e.target.value)}
-                  />
-                </FormControl>
-                <FormMessage className="absolute bottom-[-20px]" />
-              </FormItem>
-            )}
-          />
-        </div>
-      </div>
-
-      {data?.currencies &&
-        fields.length > data?.currencies?.length &&
-        Array.from({ length: priceGroups - 1 }).map((_, index) => {
-          const groupIndex = index + 1;
-          return (
-            <div
-              key={groupIndex}
-              className="border border-slate-200 rounded-md shadow-sm p-5 relative"
-            >
-              <div className="flex flex-col gap-4">
-                <div className="flex flex-col md:flex-row gap-5">
-                  {data?.currencies.map((currency, currencyIndex) => (
-                    <FormField
-                      key={currency.id}
-                      control={control}
-                      name={`price.${groupIndex * data.currencies.length + currencyIndex}.amount`}
-                      render={({ field }) => (
-                        <FormItem className="relative flex-1">
-                          <FormLabel>{currency.code}</FormLabel>
-                          <FormControl className="m-0">
-                            <Input
-                              type="number"
-                              placeholder={`Price in ${currency.code}`}
-                              {...field}
-                              value={field.value || ''}
-                              onChange={(e) => {
-                                field.onChange(Number(e.target.value));
-                                setValue(
-                                  `price.${groupIndex * data.currencies.length + currencyIndex}.currencyId`,
-                                  currency.id,
-                                );
-                              }}
-                            />
-                          </FormControl>
-                          <FormMessage className="absolute bottom-[-20px]" />
-                        </FormItem>
-                      )}
+      {fields.map((field, packageIndex) => (
+        <div
+          key={field.id}
+          className="border border-slate-200 rounded-md shadow-sm p-5 relative"
+        >
+          <div className="flex flex-col gap-4">
+            <FormField
+              control={control}
+              name={`tourPackages.${packageIndex}.peopleCount`}
+              render={({ field, fieldState }) => (
+                <FormItem className="relative grid w-full items-center">
+                  <FormLabel>People Number</FormLabel>
+                  <FormControl className="m-0">
+                    <Input
+                      type="number"
+                      placeholder="Enter people number"
+                      {...field}
+                      onChange={(e) => {
+                        const value =
+                          e.target.value === '' ? '' : Number(e.target.value);
+                        field.onChange(value);
+                        validatePackagePeopleCount(
+                          packageIndex,
+                          e.target.valueAsNumber,
+                        );
+                      }}
                     />
-                  ))}
-                </div>
+                  </FormControl>
+                  {fieldState.error ? (
+                    <FormMessage className="absolute bottom-[-20px]" />
+                  ) : (
+                    peopleCountErrors[packageIndex] && (
+                      <p className="text-[0.8rem] font-medium text-destructive absolute bottom-[-20px]">
+                        {peopleCountErrors[packageIndex]}
+                      </p>
+                    )
+                  )}
+                </FormItem>
+              )}
+            />
 
+            <div className="flex flex-col md:flex-row gap-5">
+              {data?.currencies.map((currency, currencyIndex) => (
                 <FormField
+                  key={currency.id}
                   control={control}
-                  name={`price.${groupIndex * 2}.comment`}
+                  name={`tourPackages.${packageIndex}.prices.${currencyIndex}.amount`}
                   render={({ field }) => (
                     <FormItem className="relative flex-1">
-                      <FormLabel>Comment</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Describe the price"
-                          className="resize-none h-21"
+                      <FormLabel>{currency.code}</FormLabel>
+                      <FormControl className="m-0">
+                        <Input
+                          type="number"
+                          placeholder={`Price in ${currency.code}`}
                           {...field}
-                          onChange={(e) =>
-                            handleCommentChange(groupIndex, e.target.value)
-                          }
+                          value={field.value || ''}
+                          onChange={(e) => {
+                            field.onChange(Number(e.target.value));
+                            // Ensure the currencyId is set
+                            setValue(
+                              `tourPackages.${packageIndex}.prices.${currencyIndex}.currencyId`,
+                              currency.id,
+                            );
+                          }}
                         />
                       </FormControl>
+                      <FormMessage className="absolute bottom-[-20px]" />
                     </FormItem>
                   )}
                 />
-
-                <Button
-                  size="icon"
-                  className="absolute top-1 right-1 hover:text-sky-300 border-none shadow-none hover:shadow-none"
-                  onClick={() => handleRemovePriceGroup(groupIndex)}
-                >
-                  <X />
-                </Button>
-              </div>
+              ))}
             </div>
-          );
-        })}
+
+            <FormField
+              control={control}
+              name={`tourPackages.${packageIndex}.comment`}
+              render={({ field }) => (
+                <FormItem className="relative flex-1">
+                  <FormLabel>Tour Package Description</FormLabel>
+                  <FormControl className="m-0">
+                    <Textarea
+                      placeholder="Tour Package Description"
+                      className="resize-none h-21"
+                      {...field}
+                      onChange={(e) => field.onChange(e.target.value)}
+                    />
+                  </FormControl>
+                  <FormMessage className="absolute bottom-[-20px]" />
+                </FormItem>
+              )}
+            />
+
+            {packageIndex > 0 && (
+              <Button
+                size="icon"
+                className="absolute top-1 right-1 hover:text-sky-300 border-none shadow-none hover:shadow-none"
+                onClick={() => remove(packageIndex)}
+                type="button"
+              >
+                <X />
+              </Button>
+            )}
+          </div>
+        </div>
+      ))}
 
       {fields.length < 10 && (
         <Button
           className="mt-5 w-1/5 cursor-pointer"
-          onClick={handleAddPriceGroup}
-          disabled={loading || !data?.currencies?.length}
+          onClick={handleAddTourPackage}
+          disabled={loading}
           type="button"
         >
-          Add Price <Plus className="ml-2" />
+          Add Package <Plus className="ml-2" />
         </Button>
       )}
     </div>

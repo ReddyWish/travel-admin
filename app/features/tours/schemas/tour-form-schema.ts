@@ -59,34 +59,54 @@ export function createTourFormSchema(availableCurrencyIds: string[]) {
       .min(1, 'Duration must be at least 1 day')
       .max(50, 'Duration cannot exceed 50 days'),
 
+    peopleCount: z
+      .number({
+        required_error: 'Maximum people number must be at least 1',
+        invalid_type_error: 'Maximum people number must be at least 1',
+      })
+      .int('Maximum people number must be a whole number')
+      .min(1, 'Maximum people number must be at least 1')
+      .max(200, 'Maximum people number can not exceed 200'),
+
     categoryIds: z.array(z.string()).nonempty('Select at least one category'),
 
-    price: z
-      .array(
-        z.object({
-          currencyId: z
-            .string({ required_error: 'Currency is required' })
-            .nonempty('Currency is required'),
-          amount: z
-            .number({ required_error: 'Price is required' })
-            .positive('Price must be greater than zero')
-            .max(1000000, 'Price cannot exceed 1,000,000'),
-          comment: z
-            .string()
-            .max(200, 'Comment must not exceed 200 characters')
-            .optional(),
-        }),
-      )
-      .refine(
-        (prices) => {
-          return availableCurrencyIds.every((currencyId) =>
-            prices.some((price) => price.currencyId === currencyId),
-          );
-        },
-        {
-          message: `Prices must be provided for all available currencies: ${availableCurrencyIds.join(', ')}`,
-        },
-      ),
+    tourPackages: z.array(
+      z.object({
+        peopleCount: z
+          .number({
+            required_error: 'People number must be at least 1',
+            invalid_type_error: 'People number must be at least 1',
+          })
+          .min(1, 'People number must be at least 1')
+          .max(200, 'Comment must not exceed 200 characters'),
+        comment: z
+          .string()
+          .min(1, 'Tour Package description must be at least 1')
+          .max(200, 'Tour Package description must not exceed 200 characters'),
+        prices: z
+          .array(
+            z.object({
+              currencyId: z
+                .string({ required_error: 'Currency is required' })
+                .nonempty('Currency is required'),
+              amount: z
+                .number({ required_error: 'Price is required' })
+                .positive('Price must be greater than zero')
+                .max(1000000, 'Price cannot exceed 1,000,000'),
+            }),
+          )
+          .refine(
+            (prices) => {
+              return availableCurrencyIds.every((currencyId) =>
+                prices.some((price) => price.currencyId === currencyId),
+              );
+            },
+            {
+              message: `Prices must be provided for all available currencies: ${availableCurrencyIds.join(', ')}`,
+            },
+          ),
+      }),
+    ),
 
     program: z
       .array(

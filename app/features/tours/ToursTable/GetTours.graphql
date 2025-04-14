@@ -2,10 +2,12 @@ query GetTours {
     tours {
         id
         title
-        price {
-            amount
-            currency {
-                code
+        tourPackages {
+            peopleCount
+            comment
+            prices {
+                amount
+                currencyId
             }
         }
         accommodations {

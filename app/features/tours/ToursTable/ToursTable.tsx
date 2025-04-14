@@ -35,6 +35,8 @@ export default function ToursTable() {
     setSelectedCurrency,
   });
 
+  console.log(currenciesData);
+
   const table = useReactTable({
     data: toursData?.tours ?? [],
     columns,

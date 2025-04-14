@@ -85,17 +85,33 @@ export const toursTableColumns = ({
       );
     },
     cell: ({ row }) => {
-      const priceWithCurrency = row.original.price.find(
-        (price) => price.currency.code === selectedCurrency,
+      const activeCurrency = currenciesData?.currencies.find(
+        (currency) => currency.code === selectedCurrency,
       );
 
-      if (!priceWithCurrency && row.original.price.length === 0) {
+      if (!activeCurrency) {
+        return 'Select currency';
+      }
+
+      const prices = row.original.tourPackages
+        .map((pkg) =>
+          pkg.prices.find((price) => price.currencyId === activeCurrency.id),
+        )
+        .filter(Boolean) // Remove undefined values
+        .map((price) => price?.amount || 0);
+
+      if (prices.length === 0) {
         return 'No price available';
       }
 
-      const displayPrice = priceWithCurrency || row.original.price[0];
+      const minPrice = Math.min(...prices);
+      const maxPrice = Math.max(...prices);
 
-      return `${displayPrice.amount} ${displayPrice.currency.code}`;
+      if (minPrice === maxPrice) {
+        return `${minPrice} ${activeCurrency.code}`;
+      }
+
+      return `${minPrice} - ${maxPrice} ${activeCurrency.code}`;
     },
   },
   {
